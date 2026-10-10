@@ -161,7 +161,7 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-a);">
             <div class="team-header-box shrink-0">
                 <div class="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-a" src="16CACB45-816F-4197-A623-0D5385604C90.png" alt="A" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-a" src="16CACB45-816F-4197-A623-0D5385604C90_2.png" alt="A" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <!-- 縦横中央配置になるようにフレックスボックス内でレイアウト -->
                 <div class="flex flex-col justify-center h-full min-w-0">
@@ -227,7 +227,7 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-b);">
             <div class="team-header-box shrink-0">
                 <div class="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-b" src="rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png" alt="B" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-b" src="rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png" alt="B" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <div class="flex flex-col justify-center h-full min-w-0">
                     <div id="ui-name-b" class="text-sm sm:text-xl font-black text-black whitespace-pre-wrap leading-tight text-left break-words truncate">チームB</div>
@@ -642,8 +642,8 @@
 
         // アプリケーション状態
         let state = {
-            teamA: { name: "渡慶次\nGOLDENS", score: 0, color: "#f5a623", setsWon: 0, logo: "16CACB45-816F-4197-A623-0D5385604C90.png" },
-            teamB: { name: "チームB", score: 0, color: "#ef4444", setsWon: 0, logo: "rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png" },
+            teamA: { name: "渡慶次\nGOLDENS", score: 0, color: "#f5a623", setsWon: 0, logo: "16CACB45-816F-4197-A623-0D5385604C90_2.png" },
+            teamB: { name: "チームB", score: 0, color: "#ef4444", setsWon: 0, logo: "rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png" },
             currentSet: 1,
             serving: "A",
             settings: { format: 3, targetPoints: 21, matchName: "練習試合", location: "体育館" },
@@ -671,13 +671,13 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'v-score-pro-v32';
         const firebaseConfig = {
-  apiKey: "AIzaSyBqhEJtfHxjFfLEMMRT9QIqT5e6eFr3_Q4",
-  authDomain: "vb-scoreboard-fd516.firebaseapp.com",
-  projectId: "vb-scoreboard-fd516",
-  storageBucket: "vb-scoreboard-fd516.firebasestorage.app",
-  messagingSenderId: "1080157858046",
-  appId: "1:1080157858046:web:5e3187ac7f6dc99e659daf"
-};
+          apiKey: "AIzaSyBqhEJtfHxjFfLEMMRT9QIqT5e6eFr3_Q4",
+          authDomain: "vb-scoreboard-fd516.firebaseapp.com",
+          projectId: "vb-scoreboard-fd516",
+          storageBucket: "vb-scoreboard-fd516.firebasestorage.app",
+          messagingSenderId: "1080157858046",
+          appId: "1:1080157858046:web:5e3187ac7f6dc99e659daf"
+        };
         let db, docRef;
         let globalPlayers = []; 
 
@@ -740,9 +740,8 @@
                 const auth = getAuth(app);
                 db = getFirestore(app);
                 
-                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (token) await signInWithCustomToken(auth, token);
-                else await signInAnonymously(auth);
+                // ユーザー自身のFirebaseプロジェクトと通信するため、システムのプレビュートークンは無視して常に匿名ログインを使用
+                await signInAnonymously(auth);
 
                 // DB監視
                 const playersRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
@@ -753,6 +752,11 @@
                         if (document.getElementById('players-db-modal').classList.contains('flex')) {
                             renderPlayersDBList();
                         }
+                    }
+                }, (error) => {
+                    console.error("Players Snapshot Error:", error);
+                    if (error.code === 'permission-denied' || (error.message && error.message.includes('permission'))) {
+                        window.showToast("Firebaseのセキュリティルールを変更してください", "error");
                     }
                 });
 
@@ -783,13 +787,23 @@
                         renderUI();
                         handleOverlays();
                     }
+                }, (error) => {
+                    console.error("Match Snapshot Error:", error);
+                    if (error.code === 'permission-denied') {
+                        window.showToast("データベースの権限エラーです。Firebaseのルールを設定してください。", "error");
+                    }
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error("Firebase Init Error:", e);
+                if (e.code === 'permission-denied' || (e.message && e.message.includes('permission'))) {
+                    window.showToast("データベースの権限エラーです。Firebaseのルールを設定してください。", "error");
+                }
+            }
         }
 
         async function saveToFirestore() {
             if (docRef) {
-                try { await setDoc(docRef, state, { merge: true }); } catch (e) { }
+                try { await setDoc(docRef, state, { merge: true }); } catch (e) { console.error("Save Error:", e); }
             }
         }
 
@@ -1615,8 +1629,8 @@
             document.documentElement.style.setProperty('--color-a', state.teamA.color);
             document.documentElement.style.setProperty('--color-b', state.teamB.color);
 
-            document.getElementById('ui-logo-a').src = state.teamA.logo || '16CACB45-816F-4197-A623-0D5385604C90.png';
-            document.getElementById('ui-logo-b').src = state.teamB.logo || 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png';
+            document.getElementById('ui-logo-a').src = state.teamA.logo || '16CACB45-816F-4197-A623-0D5385604C90_2.png';
+            document.getElementById('ui-logo-b').src = state.teamB.logo || 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
 
             document.getElementById('ui-name-a').innerHTML = state.teamA.name.replace(/\n/g, '<br>');
             document.getElementById('ui-name-b').innerHTML = state.teamB.name.replace(/\n/g, '<br>');
