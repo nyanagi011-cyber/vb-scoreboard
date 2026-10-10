@@ -161,7 +161,7 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-a);">
             <div class="team-header-box shrink-0">
                 <div class="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-a" src="16CACB45-816F-4197-A623-0D5385604C90_2.png" alt="A" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-a" src="16CACB45-816F-4197-A623-0D5385604C90.png" alt="A" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <!-- 縦横中央配置になるようにフレックスボックス内でレイアウト -->
                 <div class="flex flex-col justify-center h-full min-w-0">
@@ -227,7 +227,7 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-b);">
             <div class="team-header-box shrink-0">
                 <div class="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-b" src="rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png" alt="B" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-b" src="rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png" alt="B" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <div class="flex flex-col justify-center h-full min-w-0">
                     <div id="ui-name-b" class="text-sm sm:text-xl font-black text-black whitespace-pre-wrap leading-tight text-left break-words truncate">チームB</div>
@@ -642,8 +642,8 @@
 
         // アプリケーション状態
         let state = {
-            teamA: { name: "渡慶次\nGOLDENS", score: 0, color: "#f5a623", setsWon: 0, logo: "16CACB45-816F-4197-A623-0D5385604C90_2.png" },
-            teamB: { name: "チームB", score: 0, color: "#ef4444", setsWon: 0, logo: "rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png" },
+            teamA: { name: "渡慶次\nGOLDENS", score: 0, color: "#f5a623", setsWon: 0, logo: "16CACB45-816F-4197-A623-0D5385604C90.png" },
+            teamB: { name: "チームB", score: 0, color: "#ef4444", setsWon: 0, logo: "rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png" },
             currentSet: 1,
             serving: "A",
             settings: { format: 3, targetPoints: 21, matchName: "練習試合", location: "体育館" },
@@ -781,6 +781,10 @@
                         if(!state.currentCourt) state.currentCourt = [];
                         if(!state.substitutions) state.substitutions = [];
                         
+                        // 画像名補正（過去に間違った名前で保存されていた場合の上書き補正）
+                        if(state.teamA.logo === '16CACB45-816F-4197-A623-0D5385604C90_2.png') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90.png';
+                        if(state.teamB.logo === 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png';
+
                         state.isWatchMode = keepWatchMode;
                         
                         if (state.matchStatus !== "setting") window.closeSettingsIfRunning();
@@ -1477,22 +1481,28 @@
 
                         const scoreAHtml = isWinA 
                             ? `<div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valA}</div>`
-                            : `<div style="font-size: 24px; font-weight: 900; color: #111827; display: flex; align-items: center; justify-content: center; height: 100%;">${valA}</div>`;
+                            : `<div style="font-size: 24px; font-weight: 900; color: #111827; display: grid; place-items: center; height: 100%; line-height: 1;">${valA}</div>`;
 
                         const scoreBHtml = isWinB
                             ? `<div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valB}</div>`
-                            : `<div style="font-size: 24px; font-weight: 900; color: #111827; display: flex; align-items: center; justify-content: center; height: 100%;">${valB}</div>`;
+                            : `<div style="font-size: 24px; font-weight: 900; color: #111827; display: grid; place-items: center; height: 100%; line-height: 1;">${valB}</div>`;
 
                         setsHtml += `
                             <tr>
-                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; font-size: 18px; font-weight: bold;">${i}</td>
-                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; vertical-align: middle;">
-                                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${scoreAHtml}</div>
+                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; font-size: 18px; font-weight: bold; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1;">${i}</div>
                                 </td>
                                 <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; vertical-align: middle;">
-                                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">${scoreBHtml}</div>
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1;">${scoreAHtml}</div>
                                 </td>
-                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; font-size: 16px; font-weight: bold; color: #4b5563;">${state.setStartTimes[i]||'--:--'}<br>|<br>${state.setEndTimes[i]||'--:--'}</td>
+                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1;">${scoreBHtml}</div>
+                                </td>
+                                <td style="border: 1px solid #d1d5db; padding: 12px; text-align: center; font-size: 16px; font-weight: bold; color: #4b5563; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1.2;">
+                                        ${state.setStartTimes[i]||'--:--'}<br>|<br>${state.setEndTimes[i]||'--:--'}
+                                    </div>
+                                </td>
                             </tr>
                         `;
                     }
@@ -1549,17 +1559,21 @@
                         <div style="font-size: 32px; font-weight: 900; letter-spacing: 4px;">${state.teamA.setsWon} - ${state.teamB.setsWon}</div>
                     </div>
 
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 16px; width: 15%;">セット</th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 20px; width: 30%; color: #000;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 16px; width: 15%; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1;">セット</div>
                                 </th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 20px; width: 30%; color: #000;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 20px; width: 30%; color: #000; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div>
                                 </th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 16px; width: 25%;">開始 | 終了</th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 20px; width: 30%; color: #000; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div>
+                                </th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 12px; text-align: center; font-size: 16px; width: 25%; vertical-align: middle;">
+                                    <div style="display: grid; place-items: center; width: 100%; height: 100%; line-height: 1;">開始 | 終了</div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1629,8 +1643,9 @@
             document.documentElement.style.setProperty('--color-a', state.teamA.color);
             document.documentElement.style.setProperty('--color-b', state.teamB.color);
 
-            document.getElementById('ui-logo-a').src = state.teamA.logo || '16CACB45-816F-4197-A623-0D5385604C90_2.png';
-            document.getElementById('ui-logo-b').src = state.teamB.logo || 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
+            // フォールバック用のロゴパスも正しいファイル名に修正
+            document.getElementById('ui-logo-a').src = state.teamA.logo || '16CACB45-816F-4197-A623-0D5385604C90.png';
+            document.getElementById('ui-logo-b').src = state.teamB.logo || 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png';
 
             document.getElementById('ui-name-a').innerHTML = state.teamA.name.replace(/\n/g, '<br>');
             document.getElementById('ui-name-b').innerHTML = state.teamB.name.replace(/\n/g, '<br>');
