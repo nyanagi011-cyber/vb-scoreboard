@@ -673,8 +673,22 @@
         };
 
         window.toggleFullScreen = () => {
-            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(e=>{}); } 
-            else { document.exitFullscreen(); }
+            const doc = document.documentElement;
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (doc.requestFullscreen) {
+                    doc.requestFullscreen().catch(e => window.showToast("全画面表示エラー", "error"));
+                } else if (doc.webkitRequestFullscreen) {
+                    doc.webkitRequestFullscreen();
+                } else {
+                    window.showToast("このスマホ・ブラウザは全画面表示に非対応です", "error");
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
         };
 
         function updateSchoolDatalist() {
@@ -722,7 +736,10 @@
                         if(!state.currentCourt) state.currentCourt = [];
                         if(!state.substitutions) state.substitutions = [];
                         
-                        // 画像名補正
+                        // 画像名補正とデフォルト画像の強制適用
+                        if(!state.teamA.logo || state.teamA.logo.trim() === '') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
+                        if(!state.teamB.logo || state.teamB.logo.trim() === '') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
+                        
                         if(state.teamA.logo === '16CACB45-816F-4197-A623-0D5385604C90.png') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
                         if(state.teamB.logo === 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
 
@@ -921,7 +938,7 @@
                 if (dbMode === 'selectStarter' && isStarter) { disabled = true; badgeHtml = '<span class="text-[10px] sm:text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded font-bold">先発済</span>'; }
                 if (dbMode === 'selectBench' && isStarter) { disabled = true; badgeHtml = '<span class="text-[10px] sm:text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded font-bold">先発</span>'; }
 
-                const item = document.createElement('label');
+                const item = document.createElement('div');
                 item.className = `flex flex-col p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl shadow-sm transition-colors ${disabled ? 'bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed' : 'bg-white border-gray-200 hover:border-indigo-300 active:bg-indigo-50 cursor-pointer'}`;
                 
                 let actionHtml = '';
