@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <!-- スマホのブラウザ枠にピタッと収めるためのviewport設定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- ホーム画面に追加した際、アプリのようにツールバーを非表示にする設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VB Score">
+    <meta name="mobile-web-app-capable" content="yes">
+
     <title>バレーボール スコアボード</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,6 +36,16 @@
             -webkit-user-select: none;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+        }
+
+        /* ダブルタップによる意図しない画面拡大（ズーム）を防止する設定 */
+        button, a, input, select, textarea {
+            touch-action: manipulation;
+        }
+
+        /* 点数ボタン部分はさらに強力にズームやスクロールを無効化 */
+        #score-btn-a, #score-btn-b {
+            touch-action: none;
         }
 
         /* 100dvhを使用してURLバーの影響を排除し、画面にジャストフィットさせる */
@@ -70,11 +87,11 @@
             <h1 class="text-2xl font-black text-gray-900 text-center leading-tight">バレーボール<br>クラウドスコアボード</h1>
             
             <div class="w-full flex flex-col gap-3 pt-4">
-                <button onclick="window.enterAsAdmin()" class="py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+                <button onclick="window.enterAsAdmin()" id="btn-startup-admin" class="py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
                     <div class="flex items-center gap-2"><i data-lucide="pencil" class="w-5 h-5"></i> <span>点数管理者として入る</span></div>
-                    <span class="text-[10px] font-normal opacity-80">(新しく試合を作成して設定画面へ)</span>
+                    <span class="text-[10px] font-normal opacity-80">(自分の専用ルームで試合を管理)</span>
                 </button>
-                <button onclick="window.showViewerMatchList()" class="py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+                <button onclick="window.showViewerMatchList()" id="btn-startup-viewer" class="py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
                     <div class="flex items-center gap-2"><i data-lucide="eye" class="w-5 h-5"></i> <span>閲覧者として入る</span></div>
                     <span class="text-[10px] font-normal opacity-80">(開催中の試合を選んで観戦)</span>
                 </button>
@@ -243,10 +260,10 @@
 
             <div id="match-end-buttons" class="w-full flex flex-col gap-3 hidden">
                 <button onclick="window.shareResultImage()" id="btn-save-img" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="image" class="w-5 h-5"></i> 試合結果を画像で保存・共有
+                    <i data-lucide="image" class="w-5 h-5"></i> 試合結果を画像で保存
                 </button>
                 <button onclick="window.endMatch()" class="admin-only w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-sm rounded-2xl active:scale-95 transition-all">
-                    終了して設定に戻る
+                    終了して設定に戻る (次の試合へ)
                 </button>
             </div>
         </div>
@@ -544,10 +561,10 @@
             setStartTimes: {1: null, 2: null, 3: null, 4: null, 5: null}, setEndTimes: {1: null, 2: null, 3: null, 4: null, 5: null},
             matchDate: "", matchStatus: "setting", 
             roster: { starters: { center: null, setter: null, left: null, backLeft: null, right: null, backRight: null }, bench: [] },
-            currentCourt: [], substitutions: []
+            currentCourt: [], substitutions: [], updatedAt: Date.now()
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'v-score-pro-v34';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'v-score-pro-v35';
         const firebaseConfig = {
           apiKey: "AIzaSyBqhEJtfHxjFfLEMMRT9QIqT5e6eFr3_Q4",
           authDomain: "vb-scoreboard-fd516.firebaseapp.com",
@@ -556,7 +573,8 @@
           messagingSenderId: "1080157858046",
           appId: "1:1080157858046:web:5e3187ac7f6dc99e659daf"
         };
-        let db, docRef;
+        
+        let app, auth, db, docRef, currentUser;
         let globalPlayers = []; 
 
         function getJapaneseDateStr() {
@@ -576,14 +594,87 @@
             setTimeout(() => { el.classList.add('-translate-y-32', 'opacity-0'); el.classList.remove('translate-y-0', 'opacity-100'); }, 3000);
         }
 
+        // ================= アプリの初期化とFirebase接続 =================
+        async function ensureFirebaseInitialized() {
+            if (!app) {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            }
+            if (!currentUser) {
+                try {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                    
+                    // 選手データベースの初期ロードと監視開始
+                    const playersRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                    onSnapshot(playersRef, (snap) => {
+                        if (snap.exists()) {
+                            const data = snap.data();
+                            if (data && data.players && Array.isArray(data.players)) {
+                                globalPlayers = data.players;
+                                updateSchoolDatalist();
+                                if (document.getElementById('players-db-modal').classList.contains('flex')) renderPlayersDBList();
+                            }
+                        } else {
+                            // 存在しない場合は空で作成
+                            setDoc(playersRef, { players: [] }).catch(e => console.error(e));
+                        }
+                    }, (error) => {
+                        console.error("選手データの取得エラー:", error);
+                        window.showToast("データベースへのアクセスが拒否されました", "error");
+                    });
+                } catch (e) {
+                    console.error("Firebase Login Error:", e);
+                    window.showToast("通信エラーが発生しました", "error");
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ensureFirebaseInitialized(); // 起動時に裏側でログインを済ませておく
+            try { state.matchDate = getJapaneseDateStr(); lucide.createIcons(); } catch(e){}
+        });
+
         // ================= アプリ入室ロジック =================
         window.enterAsAdmin = async () => {
-            state.roomName = 'match_' + Date.now(); // ユニークな試合IDを自動生成
+            const btn = document.getElementById('btn-startup-admin');
+            const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 準備中...'; lucide.createIcons();
+            
+            await ensureFirebaseInitialized();
+            
+            if (!currentUser) { window.showToast("認証に失敗しました", "error"); btn.innerHTML = origHtml; return; }
+            
+            // 管理者のUIDをルーム名にすることで、常に固定の1枠を使用し増え続けるのを防ぐ
+            state.roomName = 'room_' + currentUser.uid;
             state.role = 'admin';
-            state.matchStatus = 'setting';
-            document.getElementById('startup-overlay').classList.add('hidden');
-            document.getElementById('startup-overlay').classList.remove('flex');
-            await initFirebase();
+            
+            docRef = doc(db, 'artifacts', appId, 'public', 'data', 'matches', state.roomName);
+            try {
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    // 既存の試合状態があれば復元
+                    const data = snap.data();
+                    state = { ...state, ...data, setScores: { ...state.setScores, ...data.setScores }, settings: { ...state.settings, ...data.settings } };
+                } else {
+                    // 新規なら初期状態をセットして設定画面へ
+                    state.matchStatus = 'setting';
+                    await setDoc(docRef, state);
+                }
+                
+                document.getElementById('startup-overlay').classList.add('hidden');
+                document.getElementById('startup-overlay').classList.remove('flex');
+                
+                setupMatchListener();
+                
+                if (state.matchStatus === 'setting') window.openSettings();
+                else renderUI();
+                
+            } catch (e) {
+                console.error(e);
+                window.showToast("試合データの作成に失敗しました", "error");
+            }
+            btn.innerHTML = origHtml; lucide.createIcons();
         };
 
         window.showViewerMatchList = async () => {
@@ -591,20 +682,17 @@
             document.getElementById('startup-match-list-container').classList.remove('hidden');
             document.getElementById('startup-match-list-container').classList.add('flex');
             
+            await ensureFirebaseInitialized();
+            
             try {
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                await signInAnonymously(auth);
-                const tempDb = getFirestore(app);
-                
-                const matchesRef = collection(tempDb, 'artifacts', appId, 'public', 'data', 'matches');
+                const matchesRef = collection(db, 'artifacts', appId, 'public', 'data', 'matches');
                 const querySnapshot = await getDocs(matchesRef);
                 
                 let matches = [];
                 querySnapshot.forEach((doc) => { matches.push({ id: doc.id, ...doc.data() }); });
                 
-                // 新しい試合が上に来るようにIDでソート
-                matches.sort((a, b) => b.id.localeCompare(a.id));
+                // 更新日時順（新しい順）にソート
+                matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
                 const listBody = document.getElementById('match-list-body');
                 listBody.innerHTML = '';
@@ -650,95 +738,66 @@
         window.enterAsViewer = async (roomId) => {
             state.roomName = roomId;
             state.role = 'viewer';
+            docRef = doc(db, 'artifacts', appId, 'public', 'data', 'matches', state.roomName);
             document.getElementById('startup-overlay').classList.add('hidden');
             document.getElementById('startup-overlay').classList.remove('flex');
-            await initFirebase();
+            setupMatchListener();
         };
 
         window.toggleRole = () => {
             state.role = state.role === 'admin' ? 'viewer' : 'admin';
             window.showToast(state.role === 'admin' ? "管理者モードになりました" : "閲覧者モードになりました", "success");
             renderUI();
-            window.closeSettingsIfRunning();
+            // ※ここで設定画面は開かないように変更
         };
+
+        function setupMatchListener() {
+            if (!docRef) return;
+            
+            document.getElementById('connection-status').classList.replace('bg-red-500', 'bg-green-500');
+            document.getElementById('connection-status').classList.remove('animate-pulse');
+
+            onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const myRole = state.role;
+                    const myRoom = state.roomName;
+                    state = { ...state, ...data, setScores: { ...state.setScores, ...data.setScores }, settings: { ...state.settings, ...data.settings } };
+                    
+                    if(!state.roster) state.roster = { starters: {center:null, setter:null, left:null, backLeft:null, right:null, backRight:null}, bench: [] };
+                    if(!state.currentCourt) state.currentCourt = [];
+                    if(!state.substitutions) state.substitutions = [];
+                    
+                    // 画像名補正とデフォルト画像
+                    if(!state.teamA.logo || state.teamA.logo.trim() === '') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
+                    if(!state.teamB.logo || state.teamB.logo.trim() === '') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
+
+                    state.role = myRole; state.roomName = myRoom;
+                    
+                    renderUI(); handleOverlays();
+                }
+            }, (error) => {
+                console.error("Match Sync Error:", error);
+                window.showToast("通信エラーが発生しました", "error");
+            });
+        }
+
+        async function saveToFirestore() {
+            if (docRef && state.role === 'admin') {
+                try { 
+                    state.updatedAt = Date.now();
+                    await setDoc(docRef, state, { merge: true }); 
+                } catch (e) { 
+                    console.error("Save Error:", e); 
+                    window.showToast("保存に失敗しました", "error");
+                }
+            }
+        }
 
         function updateSchoolDatalist() {
             const datalist = document.getElementById('school-datalist'); if (!datalist) return;
             const schools = [...new Set(globalPlayers.map(p => p.school).filter(s => s && s.trim() !== ''))];
             datalist.innerHTML = schools.map(s => `<option value="${s}">`).join('');
-        }
-
-        async function initFirebase() {
-            if (!firebaseConfig) return;
-            try {
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                db = getFirestore(app);
-                await signInAnonymously(auth);
-
-                const playersRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
-                onSnapshot(playersRef, (snap) => {
-                    if (snap.exists()) {
-                        globalPlayers = snap.data().players || [];
-                        updateSchoolDatalist();
-                        if (document.getElementById('players-db-modal').classList.contains('flex')) renderPlayersDBList();
-                    }
-                }, (error) => {
-                    window.showToast("データベースへのアクセスが拒否されました", "error");
-                    console.error(error);
-                });
-
-                docRef = doc(db, 'artifacts', appId, 'public', 'data', 'matches', state.roomName);
-                const snap = await getDoc(docRef);
-                if (!snap.exists()) {
-                    if(state.role === 'admin') await setDoc(docRef, state);
-                }
-
-                document.getElementById('connection-status').classList.replace('bg-red-500', 'bg-green-500');
-                document.getElementById('connection-status').classList.remove('animate-pulse');
-
-                onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const myRole = state.role;
-                        const myRoom = state.roomName;
-                        state = { ...state, ...data, setScores: { ...state.setScores, ...data.setScores }, settings: { ...state.settings, ...data.settings } };
-                        if(!state.roster) state.roster = { starters: {center:null, setter:null, left:null, backLeft:null, right:null, backRight:null}, bench: [] };
-                        if(!state.currentCourt) state.currentCourt = [];
-                        if(!state.substitutions) state.substitutions = [];
-                        
-                        // 画像名補正とデフォルト画像
-                        if(!state.teamA.logo || state.teamA.logo.trim() === '') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
-                        if(!state.teamB.logo || state.teamB.logo.trim() === '') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
-                        if(state.teamA.logo === '16CACB45-816F-4197-A623-0D5385604C90.png') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
-                        if(state.teamB.logo === 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ.png') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
-
-                        state.role = myRole; state.roomName = myRoom;
-                        
-                        // 管理者として入室直後は設定画面を開く
-                        if(state.matchStatus === "setting" && state.role === 'admin') {
-                             if(document.getElementById('roster-modal').classList.contains('hidden') && document.getElementById('players-db-modal').classList.contains('hidden')) {
-                                 window.openSettings();
-                             }
-                        } else if (state.matchStatus !== "setting" && state.matchStatus !== "start") {
-                            window.closeSettingsIfRunning();
-                        }
-                        
-                        renderUI(); handleOverlays();
-                    }
-                }, (error) => {
-                    console.error("Match Sync Error:", error);
-                });
-            } catch (e) { 
-                console.error("Firebase Init Error:", e);
-                window.showToast("通信エラーが発生しました", "error");
-            }
-        }
-
-        async function saveToFirestore() {
-            if (docRef && state.role === 'admin') {
-                try { await setDoc(docRef, state, { merge: true }); } catch (e) { console.error("Save Error:", e); }
-            }
         }
 
         // ================= 選手データベース処理 =================
@@ -906,7 +965,7 @@
                 
                 if (dbMode === 'manage') {
                     item.onclick = () => window.editPlayerInDB(p.id);
-                    actionHtml = `<button onclick="window.deletePlayerFromDB('${p.id}', event)" class="p-2 sm:p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg active:scale-95 transition-colors"><i data-lucide="trash-2" class="w-4 h-4 sm:w-5 sm:h-5"></i></button>`;
+                    actionHtml = `<button onclick="window.deletePlayerFromDB('${p.id}', event)" class="p-2 sm:p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg active:scale-95 transition-colors z-10"><i data-lucide="trash-2" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none"></i></button>`;
                 } else if (dbMode === 'selectBench' && !disabled) {
                     const existingBench = state.roster.bench.find(b => b.id === p.id);
                     const isChecked = existingBench ? 'checked' : '';
@@ -926,7 +985,7 @@
                     <div class="flex justify-between items-center w-full">
                         <div class="flex-1 min-w-0 pr-2">
                             <div class="text-[9px] sm:text-[10px] text-gray-500 font-bold mb-0.5 truncate">${p.grade} / ${p.school || '所属なし'}</div>
-                            <div class="text-base sm:text-xl font-black text-gray-900 truncate">${p.name}</div>
+                            <div class="text-base sm:text-xl font-black text-gray-900 truncate pointer-events-none">${p.name}</div>
                         </div>
                         <div class="shrink-0 flex items-center gap-2">${actionHtml}</div>
                     </div>
@@ -1354,7 +1413,6 @@
                 tbody.appendChild(tr);
             }
         }
-        try { state.matchDate = getJapaneseDateStr(); lucide.createIcons(); } catch (err) { console.error(err); }
     </script>
 </body>
 </html>
