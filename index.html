@@ -157,10 +157,12 @@
             </div>
 
             <button id="score-btn-a" class="admin-only flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('A', 1)">
-                <div id="serve-indicator-a" class="absolute top-2 left-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
+                <!-- ★ダイナミックアイランド対策: チームAのサーブを中央側（右）に移動 -->
+                <div id="serve-indicator-a" class="absolute top-2 right-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
                 </div>
-                <div id="badge-a" class="absolute top-2 right-2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
+                <!-- ★マッチPバッジを外側（左）に移動 -->
+                <div id="badge-a" class="absolute top-2 left-2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
                 <div class="score-digital-container">
                     <div id="ui-score-a" class="score-digital text-white font-black">0</div>
                 </div>
@@ -214,6 +216,7 @@
             </div>
 
             <button id="score-btn-b" class="admin-only flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('B', 1)">
+                <!-- チームBのサーブは中央側（左）のまま -->
                 <div id="serve-indicator-b" class="absolute top-2 left-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
                 </div>
@@ -459,7 +462,7 @@
             <div class="text-center text-[10px] sm:text-xs text-gray-500 font-bold mb-[-10px]">背番号を入力してください</div>
             <input type="number" id="number-input-val" placeholder="背番号" class="border-4 border-blue-200 p-3 sm:p-4 text-center text-2xl sm:text-3xl font-black rounded-xl focus:outline-none focus:border-blue-500 w-full bg-blue-50">
             <div class="flex gap-2 sm:gap-3 mt-1 sm:mt-2">
-                 <button class="flex-1 py-2.5 sm:py-3.5 bg-gray-200 text-gray-800 font-bold rounded-xl text-xs sm:text-sm" onclick="window.closeNumberInput()">キャンセル</button>
+                 <button class="flex-1 py-2.5 sm:py-3.5 bg-gray-200 text-gray-800 font-bold rounded-xl text-xs sm:text-sm" onclick="window.closeNumberInput()">戻る (選択をやめる)</button>
                  <button class="flex-1 py-2.5 sm:py-3.5 bg-blue-600 text-white font-black rounded-xl shadow-md active:scale-95 text-xs sm:text-sm" onclick="window.confirmNumberInput()">決定</button>
             </div>
         </div>
@@ -534,6 +537,9 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ★ Firebase の保存先を完全に固定するためのID（変更しないでください）
+        const FIXED_APP_ID = 'volleyball-score-fixed-db-v1';
+
         // 背番号記憶機能
         const LOCAL_STORAGE_NUMBERS_KEY = 'volleyball-player-numbers-v3';
         function getSavedNumber(playerId) {
@@ -564,7 +570,6 @@
             currentCourt: [], substitutions: [], updatedAt: Date.now()
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'v-score-pro-v35';
         const firebaseConfig = {
           apiKey: "AIzaSyBqhEJtfHxjFfLEMMRT9QIqT5e6eFr3_Q4",
           authDomain: "vb-scoreboard-fd516.firebaseapp.com",
@@ -606,8 +611,8 @@
                     const cred = await signInAnonymously(auth);
                     currentUser = cred.user;
                     
-                    // 選手データベースの初期ロードと監視開始
-                    const playersRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                    // 選手データベースの初期ロードと監視開始 (固定IDを使用)
+                    const playersRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                     onSnapshot(playersRef, (snap) => {
                         if (snap.exists()) {
                             const data = snap.data();
@@ -649,15 +654,14 @@
             state.roomName = 'room_' + currentUser.uid;
             state.role = 'admin';
             
-            docRef = doc(db, 'artifacts', appId, 'public', 'data', 'matches', state.roomName);
+            // 試合データの保存先も固定IDを使用
+            docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
             try {
                 const snap = await getDoc(docRef);
                 if (snap.exists()) {
-                    // 既存の試合状態があれば復元
                     const data = snap.data();
                     state = { ...state, ...data, setScores: { ...state.setScores, ...data.setScores }, settings: { ...state.settings, ...data.settings } };
                 } else {
-                    // 新規なら初期状態をセットして設定画面へ
                     state.matchStatus = 'setting';
                     await setDoc(docRef, state);
                 }
@@ -685,13 +689,13 @@
             await ensureFirebaseInitialized();
             
             try {
-                const matchesRef = collection(db, 'artifacts', appId, 'public', 'data', 'matches');
+                // 固定IDを使用して試合リストを取得
+                const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
                 const querySnapshot = await getDocs(matchesRef);
                 
                 let matches = [];
                 querySnapshot.forEach((doc) => { matches.push({ id: doc.id, ...doc.data() }); });
                 
-                // 更新日時順（新しい順）にソート
                 matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
                 const listBody = document.getElementById('match-list-body');
@@ -738,7 +742,8 @@
         window.enterAsViewer = async (roomId) => {
             state.roomName = roomId;
             state.role = 'viewer';
-            docRef = doc(db, 'artifacts', appId, 'public', 'data', 'matches', state.roomName);
+            // 閲覧者として入る場合も固定IDを使用
+            docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
             document.getElementById('startup-overlay').classList.add('hidden');
             document.getElementById('startup-overlay').classList.remove('flex');
             setupMatchListener();
@@ -748,7 +753,6 @@
             state.role = state.role === 'admin' ? 'viewer' : 'admin';
             window.showToast(state.role === 'admin' ? "管理者モードになりました" : "閲覧者モードになりました", "success");
             renderUI();
-            // ※ここで設定画面は開かないように変更
         };
 
         function setupMatchListener() {
@@ -768,9 +772,9 @@
                     if(!state.currentCourt) state.currentCourt = [];
                     if(!state.substitutions) state.substitutions = [];
                     
-                    // 画像名補正とデフォルト画像
-                    if(!state.teamA.logo || state.teamA.logo.trim() === '') state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
-                    if(!state.teamB.logo || state.teamB.logo.trim() === '') state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
+                    // ★ 画像名補正とデフォルト画像の強制適用 (data:image以外で壊れているものはデフォルトに戻す)
+                    if(!state.teamA.logo || !state.teamA.logo.startsWith('data:')) state.teamA.logo = '16CACB45-816F-4197-A623-0D5385604C90_2.png';
+                    if(!state.teamB.logo || !state.teamB.logo.startsWith('data:')) state.teamB.logo = 'rdesign_17125.png.pagespeed.ce.nNumKdDCNZ_2.png';
 
                     state.role = myRole; state.roomName = myRoom;
                     
@@ -866,7 +870,7 @@
             
             updateSchoolDatalist();
             if(db) {
-                const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
             window.cancelEditDB();
@@ -905,7 +909,7 @@
             globalPlayers = globalPlayers.filter(p => p.id !== id);
             updateSchoolDatalist();
             if(db) {
-                const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
             window.cancelEditDB();
@@ -925,7 +929,7 @@
             });
 
             if(db) {
-                const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
             
@@ -938,7 +942,7 @@
             if(!window.backupPlayers) return;
             globalPlayers = JSON.parse(JSON.stringify(window.backupPlayers));
             if(db) {
-                const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'rosters', 'teamA_db');
+                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
             updateSchoolDatalist(); renderPlayersDBList();
