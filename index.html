@@ -98,24 +98,41 @@
                     <div class="flex items-center gap-2"><i data-lucide="eye" class="w-5 h-5"></i> <span>閲覧者として入る</span></div>
                     <span class="text-[10px] font-normal opacity-80">(開催中の試合を選んで観戦)</span>
                 </button>
+                <button onclick="window.showPastMatchList()" id="btn-startup-past" class="py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1 mt-2 border border-gray-500">
+                    <div class="flex items-center gap-2"><i data-lucide="history" class="w-4 h-4"></i> <span>過去の試合結果を確認する</span></div>
+                </button>
             </div>
         </div>
 
-        <!-- 閲覧者用：開催中の試合一覧 -->
+        <!-- 閲覧者用：開催中の試合一覧 (当日のみ) -->
         <div id="startup-match-list-container" class="bg-white rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl hidden flex-col relative overflow-hidden max-h-[85vh]">
             <div class="absolute top-0 left-0 w-full h-2 bg-emerald-500"></div>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-black text-gray-900 flex items-center gap-2">
-                    <i data-lucide="radio" class="w-5 h-5 text-emerald-500 animate-pulse"></i> 開催中の試合
+                    <i data-lucide="radio" class="w-5 h-5 text-emerald-500 animate-pulse"></i> 今日の試合一覧
                 </h2>
                 <button onclick="window.backToStartupMenu()" class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg active:scale-95">戻る</button>
             </div>
             
-            <div id="match-list-body" class="flex-1 overflow-y-auto space-y-2 pb-4">
+            <div id="match-list-body" class="flex-1 overflow-y-auto space-y-2 pb-4 custom-scrollbar">
                 <div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center">
                     <i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>
                     試合データを取得中...
                 </div>
+            </div>
+        </div>
+
+        <!-- 過去の試合結果一覧 -->
+        <div id="startup-past-list-container" class="bg-white rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl hidden flex-col relative overflow-hidden max-h-[85vh]">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gray-500"></div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-black text-gray-900 flex items-center gap-2">
+                    <i data-lucide="history" class="w-5 h-5 text-gray-500"></i> 過去の試合結果
+                </h2>
+                <button onclick="window.backToStartupMenuFromPast()" class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg active:scale-95">戻る</button>
+            </div>
+            
+            <div id="past-match-list-body" class="flex-1 overflow-y-auto space-y-4 pb-4 custom-scrollbar">
             </div>
         </div>
     </div>
@@ -285,13 +302,16 @@
                 </h2>
             </div>
             
-            <!-- 管理中の試合一覧 -->
+            <!-- 管理中の試合一覧 (当日のみ) -->
             <div class="p-3 sm:p-4 border-b border-[#1a2c4e] shrink-0 bg-gray-900">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="text-gray-300 font-bold text-sm flex items-center gap-1">
-                        <i data-lucide="list" class="w-4 h-4"></i> 管理中の試合一覧
+                        <i data-lucide="list" class="w-4 h-4"></i> 当日の管理中試合
                     </h3>
-                    <button onclick="window.loadMatchListForSettings()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">更新</button>
+                    <div class="flex gap-1.5">
+                        <button onclick="window.toggleMatchManageMode()" id="btn-manage-matches" class="text-[10px] bg-red-900 hover:bg-red-800 text-red-200 px-2 py-1 rounded border border-red-700 transition-colors">管理(削除)</button>
+                        <button onclick="window.loadMatchListForSettings()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">更新</button>
+                    </div>
                 </div>
                 <div id="settings-match-list" class="max-h-32 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                     <div class="text-center text-xs text-gray-500">読み込み中...</div>
@@ -588,7 +608,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ★ Firebase の保存先を完全に固定するためのID（変更しないでください）
         const FIXED_APP_ID = 'volleyball-score-fixed-db-v1';
@@ -634,6 +654,7 @@
         
         let app, auth, db, docRef, currentUser;
         let globalPlayers = []; 
+        let matchManageMode = false; // 試合削除モード
 
         function getJapaneseDateStr() {
             try { const formatter = new Intl.DateTimeFormat('ja-JP', { era: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'japanese' }); return formatter.format(new Date()); } 
@@ -745,7 +766,15 @@
                 const querySnapshot = await getDocs(matchesRef);
                 
                 let matches = [];
-                querySnapshot.forEach((doc) => { matches.push({ id: doc.id, ...doc.data() }); });
+                const todayStr = getJapaneseDateStr();
+                
+                querySnapshot.forEach((doc) => { 
+                    const d = doc.data();
+                    // 当日の試合のみを抽出
+                    if(d.matchDate === todayStr) {
+                        matches.push({ id: doc.id, ...d }); 
+                    }
+                });
                 
                 matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
@@ -753,7 +782,7 @@
                 listBody.innerHTML = '';
                 
                 if (matches.length === 0) {
-                    listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">現在公開されている試合はありません</div>';
+                    listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">現在公開されている今日の試合はありません</div>';
                     return;
                 }
 
@@ -763,7 +792,7 @@
                         ? '<span class="bg-gray-200 text-gray-500 px-2 py-0.5 rounded text-[10px]">終了</span>' 
                         : '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px] animate-pulse">進行中</span>';
                     const html = `
-                        <div onclick="window.enterAsViewer('${m.id}')" class="p-3 border-2 border-gray-100 rounded-xl hover:border-emerald-300 active:bg-emerald-50 cursor-pointer transition-colors ${isOver ? 'opacity-60' : ''}">
+                        <div onclick="window.enterAsViewer('${m.id}')" class="p-3 border-2 border-gray-100 rounded-xl hover:border-emerald-300 active:bg-emerald-50 cursor-pointer transition-colors bg-white shadow-sm ${isOver ? 'opacity-70' : ''}">
                             <div class="flex justify-between items-start mb-1">
                                 <div class="text-xs font-black text-gray-900">${m.settings?.matchName || '名無し試合'}</div>
                                 ${statusLabel}
@@ -771,7 +800,10 @@
                             <div class="text-[10px] text-gray-500 font-bold mb-1">${m.settings?.location || ''}</div>
                             <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
                                 <div class="text-xs font-black truncate flex-1 text-right pr-2" style="color: ${m.teamA?.color || '#000'}">${m.teamA?.name?.replace(/\n/g, '') || 'TeamA'}</div>
-                                <div class="text-sm font-black text-gray-900 px-2 py-0.5 bg-white rounded shadow-sm">${m.teamA?.setsWon || 0} - ${m.teamB?.setsWon || 0}</div>
+                                <div class="flex flex-col items-center justify-center px-2">
+                                    <div class="text-sm font-black text-gray-900 px-2 py-0.5 bg-white rounded shadow-sm border border-gray-200 leading-none mb-1">${m.teamA?.setsWon || 0} - ${m.teamB?.setsWon || 0}</div>
+                                    <div class="text-[10px] font-bold text-gray-500 leading-none">${m.teamA?.score || 0} - ${m.teamB?.score || 0}</div>
+                                </div>
                                 <div class="text-xs font-black truncate flex-1 text-left pl-2" style="color: ${m.teamB?.color || '#000'}">${m.teamB?.name?.replace(/\n/g, '') || 'TeamB'}</div>
                             </div>
                         </div>
@@ -784,9 +816,94 @@
             }
         };
 
+        window.showPastMatchList = async () => {
+            document.getElementById('startup-menu').classList.add('hidden');
+            const pastContainer = document.getElementById('startup-past-list-container');
+            pastContainer.classList.remove('hidden');
+            pastContainer.classList.add('flex');
+            
+            const listBody = document.getElementById('past-match-list-body');
+            listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>データを取得中...</div>';
+            lucide.createIcons();
+
+            await ensureFirebaseInitialized();
+
+            try {
+                const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
+                const querySnapshot = await getDocs(matchesRef);
+                let pastMatches = [];
+                const todayStr = getJapaneseDateStr();
+                
+                querySnapshot.forEach(doc => {
+                    const d = doc.data();
+                    // 今日以外の試合（かつ、設定中などで放置されていない「終了した」試合のみ）を抽出
+                    if (d.matchDate !== todayStr && d.matchStatus === 'match_over') {
+                        pastMatches.push({ id: doc.id, ...d });
+                    }
+                });
+                
+                if (pastMatches.length === 0) {
+                    listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">過去の試合結果はありません</div>';
+                    return;
+                }
+
+                // 日付でグループ化する
+                const groups = {};
+                pastMatches.forEach(m => {
+                    const d = m.matchDate || '日付不明';
+                    if(!groups[d]) groups[d] = [];
+                    groups[d].push(m);
+                });
+                
+                // 日付を降順でソート（最新の更新日が新しい順）
+                const sortedDates = Object.keys(groups).sort((a, b) => {
+                    const maxA = Math.max(...groups[a].map(m => m.updatedAt || 0));
+                    const maxB = Math.max(...groups[b].map(m => m.updatedAt || 0));
+                    return maxB - maxA;
+                });
+
+                listBody.innerHTML = '';
+                sortedDates.forEach(date => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = "mb-4";
+                    let html = `<h3 class="text-sm font-black text-gray-700 border-b-2 border-gray-200 pb-1 mb-2">${date}</h3><div class="space-y-2">`;
+                    
+                    groups[date].sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0)).forEach(m => {
+                        // データをエンコードしてクリック時に渡せるようにする
+                        const encodedData = encodeURIComponent(JSON.stringify(m));
+                        html += `
+                            <div onclick="window.showMatchResultImageFromPast('${encodedData}')" class="p-3 border border-gray-200 rounded-xl hover:border-gray-400 active:bg-gray-50 cursor-pointer transition-colors bg-white shadow-sm">
+                                <div class="flex justify-between items-start mb-1">
+                                    <div class="text-xs font-black text-gray-900">${m.settings?.matchName || '名無し試合'}</div>
+                                    <span class="text-[9px] text-gray-400 font-bold">${m.settings?.location || ''}</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                    <div class="text-xs font-black truncate flex-1 text-right pr-2" style="color: ${m.teamA?.color || '#000'}">${m.teamA?.name?.replace(/\n/g, '') || 'TeamA'}</div>
+                                    <div class="text-sm font-black text-gray-900 px-2 py-0.5 bg-white rounded shadow-sm border border-gray-200 leading-none">${m.teamA?.setsWon || 0} - ${m.teamB?.setsWon || 0}</div>
+                                    <div class="text-xs font-black truncate flex-1 text-left pl-2" style="color: ${m.teamB?.color || '#000'}">${m.teamB?.name?.replace(/\n/g, '') || 'TeamB'}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                    groupDiv.innerHTML = html;
+                    listBody.appendChild(groupDiv);
+                });
+
+            } catch (e) {
+                console.error(e);
+                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ取得エラーが発生しました</div>';
+            }
+        };
+
         window.backToStartupMenu = () => {
             document.getElementById('startup-match-list-container').classList.add('hidden');
             document.getElementById('startup-match-list-container').classList.remove('flex');
+            document.getElementById('startup-menu').classList.remove('hidden');
+        };
+        window.backToStartupMenuFromPast = () => {
+            document.getElementById('startup-past-list-container').classList.add('hidden');
+            document.getElementById('startup-past-list-container').classList.remove('flex');
             document.getElementById('startup-menu').classList.remove('hidden');
         };
 
@@ -826,9 +943,8 @@
                     if(!state.currentCourt) state.currentCourt = [];
                     if(!state.substitutions) state.substitutions = [];
                     
-                    // ★ 画像名補正とデフォルト画像の強制適用
-                    if(!state.teamA.logo || !state.teamA.logo.startsWith('data:')) state.teamA.logo = 'goldenz.png';
-                    if(!state.teamB.logo || !state.teamB.logo.startsWith('data:')) state.teamB.logo = 'vb.png';
+                    if(!state.teamA.logo || state.teamA.logo.length > 500) state.teamA.logo = 'goldenz.png';
+                    if(!state.teamB.logo || state.teamB.logo.length > 500) state.teamB.logo = 'vb.png';
 
                     state.role = myRole; state.roomName = myRoom;
                     
@@ -862,6 +978,35 @@
         let pendingActionMatchId = null;
         let pendingActionMatchData = null;
 
+        window.toggleMatchManageMode = () => {
+            matchManageMode = !matchManageMode;
+            const btn = document.getElementById('btn-manage-matches');
+            if (matchManageMode) {
+                btn.classList.replace('bg-red-900', 'bg-red-600');
+                btn.classList.replace('text-red-200', 'text-white');
+                btn.textContent = '完了';
+            } else {
+                btn.classList.replace('bg-red-600', 'bg-red-900');
+                btn.classList.replace('text-white', 'text-red-200');
+                btn.textContent = '管理(削除)';
+            }
+            window.loadMatchListForSettings();
+        };
+
+        window.deleteMatch = async (matchId, event) => {
+            event.stopPropagation();
+            if(confirm('この試合データを完全に削除しますか？\n(※削除すると元に戻せません)')) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', matchId));
+                    window.showToast("試合データを削除しました", "success");
+                    window.loadMatchListForSettings();
+                } catch(e) {
+                    console.error(e);
+                    window.showToast("削除に失敗しました", "error");
+                }
+            }
+        };
+
         window.loadMatchListForSettings = async () => {
             const listEl = document.getElementById('settings-match-list');
             listEl.innerHTML = '<div class="text-center text-xs text-gray-500"><i data-lucide="loader-2" class="w-4 h-4 animate-spin inline"></i> 読み込み中...</div>';
@@ -871,11 +1016,19 @@
                 const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
                 const querySnapshot = await getDocs(matchesRef);
                 let matches = [];
-                querySnapshot.forEach((doc) => { matches.push({ id: doc.id, ...doc.data() }); });
+                const todayStr = getJapaneseDateStr();
+                
+                querySnapshot.forEach((doc) => { 
+                    const d = doc.data();
+                    // 設定の管理画面も当日の試合のみ表示
+                    if (d.matchDate === todayStr) {
+                        matches.push({ id: doc.id, ...d }); 
+                    }
+                });
                 matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
                 
                 if (matches.length === 0) {
-                    listEl.innerHTML = '<div class="text-center text-xs text-gray-500">管理中の試合はありません</div>';
+                    listEl.innerHTML = '<div class="text-center text-xs text-gray-500">当日の管理試合はありません</div>';
                     return;
                 }
                 
@@ -886,22 +1039,31 @@
                     const isCurrent = (m.id === state.roomName);
                     
                     const el = document.createElement('div');
-                    el.className = `flex justify-between items-center p-2 rounded-lg cursor-pointer transition-colors border active:scale-95 ${isCurrent ? 'bg-blue-900 border-blue-500' : 'bg-gray-800 border-gray-700 hover:bg-gray-700'}`;
-                    el.onclick = () => {
-                        pendingActionMatchId = m.id;
-                        pendingActionMatchData = m;
-                        document.getElementById('action-modal-title').textContent = m.settings?.matchName || '試合を選択しました';
-                        document.getElementById('match-action-modal').classList.remove('hidden');
-                        document.getElementById('match-action-modal').classList.add('flex');
-                    };
+                    el.className = `flex justify-between items-center p-2 rounded-lg transition-colors border ${isCurrent ? 'bg-blue-900 border-blue-500' : 'bg-gray-800 border-gray-700 hover:bg-gray-700'} ${matchManageMode ? '' : 'cursor-pointer active:scale-95'}`;
+                    
+                    if(!matchManageMode) {
+                        el.onclick = () => {
+                            pendingActionMatchId = m.id;
+                            pendingActionMatchData = m;
+                            document.getElementById('action-modal-title').textContent = m.settings?.matchName || '試合を選択しました';
+                            document.getElementById('match-action-modal').classList.remove('hidden');
+                            document.getElementById('match-action-modal').classList.add('flex');
+                        };
+                    }
+
+                    // 削除モードの場合はゴミ箱ボタンを表示
+                    let deleteBtnHtml = matchManageMode ? `<button onclick="window.deleteMatch('${m.id}', event)" class="p-2 bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white rounded ml-2 transition-colors z-10"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : '';
+
                     el.innerHTML = `
-                        <div class="min-w-0 flex-1">
+                        <div class="min-w-0 flex-1 pointer-events-none">
                             <div class="text-xs text-white font-bold flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span> ${isCurrent ? '<span class="text-[9px] bg-blue-600 text-white px-1 rounded ml-1">編集中</span>' : ''}</div>
-                            <div class="text-[10px] text-gray-400 truncate">${m.teamA?.name?.replace(/\n/g, '')} vs ${m.teamB?.name?.replace(/\n/g, '')}</div>
+                            <div class="text-[10px] text-gray-400 truncate">${m.teamA?.name?.replace(/\n/g, '')} vs ${m.teamB?.name?.replace(/\n/g, '')} <span class="text-gray-500">(${m.teamA?.score||0}-${m.teamB?.score||0})</span></div>
                         </div>
+                        ${deleteBtnHtml}
                     `;
                     listEl.appendChild(el);
                 });
+                lucide.createIcons();
             } catch(e) {
                 console.error(e);
                 listEl.innerHTML = '<div class="text-center text-xs text-red-500">取得失敗</div>';
@@ -949,10 +1111,15 @@
             document.getElementById('result-confirm-modal').classList.remove('flex');
         };
 
-        window.showMatchResultImage = async () => {
+        window.showMatchResultImage = async (customMatchData = null) => {
             window.closeResultConfirmModal();
+            
+            // 対象となる試合データを特定（引数があればそれ、なければ pendingActionMatchData）
+            const targetData = customMatchData || pendingActionMatchData;
+            if (!targetData) return;
+
             const origState = JSON.parse(JSON.stringify(state)); 
-            state = { ...state, ...pendingActionMatchData };
+            state = { ...state, ...targetData };
             
             const container = document.getElementById('result-image-container');
             container.innerHTML = '<div class="text-white text-sm flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-yellow-500"></i><span>画像生成中...</span></div>';
@@ -971,6 +1138,11 @@
                 container.innerHTML = '<div class="text-red-500 font-bold bg-white p-4 rounded-xl">画像の生成に失敗しました</div>';
             }
             state = origState; // 状態を戻す
+        };
+        
+        window.showMatchResultImageFromPast = (encodedMatchData) => {
+            const matchData = JSON.parse(decodeURIComponent(encodedMatchData));
+            window.showMatchResultImage(matchData);
         };
 
         window.closeResultImageModal = () => {
