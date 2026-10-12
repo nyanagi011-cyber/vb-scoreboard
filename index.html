@@ -2,10 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <!-- スマホのブラウザ枠にピタッと収めるためのviewport設定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- ホーム画面に追加した際、アプリのようにツールバーを非表示にする設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="VB Score">
@@ -38,17 +36,14 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* ダブルタップによる意図しない画面拡大（ズーム）を防止する設定 */
         button, a, input, select, textarea {
             touch-action: manipulation;
         }
 
-        /* 点数ボタン部分はさらに強力にズームやスクロールを無効化 */
         #score-btn-a, #score-btn-b {
             touch-action: none;
         }
 
-        /* 100dvhを使用してURLバーの影響を排除し、画面にジャストフィットさせる */
         body {
             background-color: #ffffff;
             color: #111827;
@@ -86,7 +81,8 @@
         <!-- トップメニュー -->
         <div id="startup-menu" class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl flex flex-col items-center gap-5 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
-            <i data-lucide="volleyball" class="w-16 h-16 text-blue-600"></i>
+            <!-- バレーボールアイコンを自チームマークに変更 -->
+            <img src="goldenz.png" alt="Team Logo" class="w-20 h-20 object-contain drop-shadow-md">
             <h1 class="text-2xl font-black text-gray-900 text-center leading-tight">バレーボール<br>クラウドスコアボード</h1>
             
             <div class="w-full flex flex-col gap-3 pt-4">
@@ -507,10 +503,6 @@
                     <option value="3年">3年</option><option value="2年">2年</option><option value="1年">1年</option>
                 </select>
                 <input type="text" id="new-player-name" placeholder="選手名を入力" class="flex-1 p-2 sm:p-3 text-xs sm:text-sm border-2 rounded-lg font-bold focus:outline-indigo-500">
-            </div>
-            <div class="flex gap-2 items-center">
-                <input type="text" id="new-player-school" list="school-datalist" placeholder="小学校名 (予測変換)" class="flex-1 p-2 sm:p-3 text-xs sm:text-sm border-2 rounded-lg font-bold focus:outline-indigo-500">
-                <datalist id="school-datalist"></datalist>
                 <button id="btn-add-player" onclick="window.addOrUpdatePlayerInDB()" class="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md shrink-0 flex items-center gap-1 font-bold transition-all text-xs sm:text-sm">
                     登録
                 </button>
@@ -692,7 +684,6 @@
                             const data = snap.data();
                             if (data && data.players && Array.isArray(data.players)) {
                                 globalPlayers = data.players;
-                                updateSchoolDatalist();
                                 if (document.getElementById('players-db-modal').classList.contains('flex')) renderPlayersDBList();
                             }
                         } else {
@@ -968,12 +959,6 @@
             }
         }
 
-        function updateSchoolDatalist() {
-            const datalist = document.getElementById('school-datalist'); if (!datalist) return;
-            const schools = [...new Set(globalPlayers.map(p => p.school).filter(s => s && s.trim() !== ''))];
-            datalist.innerHTML = schools.map(s => `<option value="${s}">`).join('');
-        }
-
         // ================= 設定画面：管理中の試合リスト関連 =================
         let pendingActionMatchId = null;
         let pendingActionMatchData = null;
@@ -1151,7 +1136,7 @@
         };
 
         function getPlayerById(id) {
-            return globalPlayers.find(p => p.id === id) || { name: '不明な選手', grade: '', school: '' };
+            return globalPlayers.find(p => p.id === id) || { name: '不明な選手', grade: '' };
         }
 
         function getStarterIds() {
@@ -1209,19 +1194,17 @@
         window.addOrUpdatePlayerInDB = async () => {
             const grade = document.getElementById('new-player-grade').value;
             const name = document.getElementById('new-player-name').value;
-            const school = document.getElementById('new-player-school').value;
             if(!name) { window.showToast("選手名を入力してください", "error"); return; }
 
             if(editingPlayerId) {
                 const p = globalPlayers.find(x => x.id === editingPlayerId);
-                if(p) { p.grade = grade; p.name = name; p.school = school; }
+                if(p) { p.grade = grade; p.name = name; }
                 window.showToast("情報を更新しました", "success");
             } else {
-                globalPlayers.push({ id: crypto.randomUUID(), grade, name, school });
+                globalPlayers.push({ id: crypto.randomUUID(), grade, name });
                 window.showToast("選手を登録しました", "success");
             }
             
-            updateSchoolDatalist();
             if(db) {
                 const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
@@ -1232,7 +1215,7 @@
 
         window.cancelEditDB = () => {
             editingPlayerId = null;
-            document.getElementById('new-player-name').value = ''; document.getElementById('new-player-school').value = '';
+            document.getElementById('new-player-name').value = '';
             const btn = document.getElementById('btn-add-player');
             btn.textContent = '登録';
             btn.classList.replace('bg-green-600', 'bg-indigo-600'); btn.classList.replace('hover:bg-green-500', 'hover:bg-indigo-500');
@@ -1244,7 +1227,6 @@
             const p = globalPlayers.find(x => x.id === id); if(!p) return;
             document.getElementById('new-player-grade').value = p.grade;
             document.getElementById('new-player-name').value = p.name;
-            document.getElementById('new-player-school').value = p.school;
             editingPlayerId = id;
             
             const btn = document.getElementById('btn-add-player');
@@ -1258,7 +1240,6 @@
             event.stopPropagation(); // 行全体のタップイベントを止める
             if(!confirm("この選手を削除しますか？")) return;
             globalPlayers = globalPlayers.filter(p => p.id !== id);
-            updateSchoolDatalist();
             if(db) {
                 const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 setDoc(pRef, { players: globalPlayers }, { merge: true });
@@ -1284,7 +1265,7 @@
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
             
-            updateSchoolDatalist(); renderPlayersDBList();
+            renderPlayersDBList();
             document.getElementById('btn-undo-promotion').classList.remove('hidden');
             window.showToast("進級処理を完了しました", "success");
         };
@@ -1296,7 +1277,7 @@
                 const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                 await setDoc(pRef, { players: globalPlayers }, { merge: true });
             }
-            updateSchoolDatalist(); renderPlayersDBList();
+            renderPlayersDBList();
             document.getElementById('btn-undo-promotion').classList.add('hidden');
             backupPlayers = null;
             window.showToast("進級処理を取り消しました", "success");
@@ -1338,8 +1319,8 @@
 
                 item.innerHTML = `
                     <div class="flex justify-between items-center w-full">
-                        <div class="flex-1 min-w-0 pr-2 pointer-events-none">
-                            <div class="text-[9px] sm:text-[10px] text-gray-500 font-bold mb-0.5 truncate">${p.grade} / ${p.school || '所属なし'}</div>
+                        <div class="flex-1 min-w-0 pr-2 pointer-events-none flex items-baseline gap-2 sm:gap-3">
+                            <div class="text-base sm:text-xl font-black text-gray-500 shrink-0">${p.grade}</div>
                             <div class="text-base sm:text-xl font-black text-gray-900 truncate">${p.name}</div>
                         </div>
                         <div class="shrink-0 flex items-center gap-2">${actionHtml}</div>
@@ -1786,7 +1767,7 @@
                 else if (scores.winner === 'B') { htmlA = `<div class="text-[9px] sm:text-[10px] font-bold text-gray-400 pt-1">${valA}</div>`; htmlB = `<div class="text-[6px] sm:text-[7px] text-red-600 font-black leading-none mb-0">WIN</div><div class="text-red-600 font-black text-xs sm:text-sm leading-none">${valB}</div>`; }
 
                 const tr = document.createElement('tr'); if (isCur) tr.className = "current-set-row";
-                tr.innerHTML = `<td><div class="${isCur ? 'text-blue-600 font-black' : 'text-gray-500 font-bold'} text-[8px] sm:text-[9px] leading-none">${i}</div></td><td><div class="flex flex-col items-center justify-center h-full">${htmlA}</div></td><td><div class="flex flex-col items-center justify-center h-full">${htmlB}</div></td>`;
+                tr.innerHTML = `<td><div class="${isCur ? 'text-blue-600 font-black' : 'text-gray-500 font-bold'} text-[8px] sm:text-[9px] leading-none">${i}S</div></td><td><div class="flex flex-col items-center justify-center h-full">${htmlA}</div></td><td><div class="flex flex-col items-center justify-center h-full">${htmlB}</div></td>`;
                 tbody.appendChild(tr);
             }
         }
