@@ -178,7 +178,7 @@
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
                 </div>
                 <!-- マッチPバッジは外側（左）へ -->
-                <div id="badge-a" class="absolute top-2 left-2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
+                <div id="badge-a" class="absolute top-2 left-1/2 -translate-x-1/2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
                 <div class="score-digital-container">
                     <div id="ui-score-a" class="score-digital text-white font-black">0</div>
                 </div>
@@ -236,7 +236,7 @@
                 <div id="serve-indicator-b" class="absolute top-2 left-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
                 </div>
-                <div id="badge-b" class="absolute top-2 right-2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
+                <div id="badge-b" class="absolute top-2 left-1/2 -translate-x-1/2 font-black px-2.5 py-1 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast">マッチP</div>
                 <div class="score-digital-container">
                     <div id="ui-score-b" class="score-digital text-white font-black">0</div>
                 </div>
@@ -309,7 +309,7 @@
                         <button onclick="window.loadMatchListForSettings()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">更新</button>
                     </div>
                 </div>
-                <div id="settings-match-list" class="max-h-32 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+                <div id="settings-match-list" class="space-y-1.5 pr-1">
                     <div class="text-center text-xs text-gray-500">読み込み中...</div>
                 </div>
             </div>
@@ -402,8 +402,9 @@
                 </div>
             </div>
             
-            <div class="sticky-footer bg-[#0b162c] border-t border-[#1a2c4e] p-3">
-                <button onclick="window.saveSettings()" class="w-full py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all">設定を保存</button>
+            <div class="sticky-footer bg-[#0b162c] border-t border-[#1a2c4e] p-3 flex flex-col gap-2">
+                <button onclick="window.saveSettings(false)" class="w-full py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all">変更を更新して試合に戻る</button>
+                <button onclick="window.saveSettings(true)" class="w-full py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all">新たに試合を追加して開始</button>
             </div>
         </div>
     </div>
@@ -648,6 +649,9 @@
         let globalPlayers = []; 
         let matchManageMode = false; // 試合削除モード
 
+        let globalMatches = [];
+        let isMatchesLoaded = false;
+
         function getJapaneseDateStr() {
             try { const formatter = new Intl.DateTimeFormat('ja-JP', { era: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'japanese' }); return formatter.format(new Date()); } 
             catch(e) { const d = new Date(); return `令和${d.getFullYear() - 2018}年${d.getMonth()+1}月${d.getDate()}日`; }
@@ -694,6 +698,30 @@
                         console.error("選手データの取得エラー:", error);
                         window.showToast("データベースへのアクセスが拒否されました", "error");
                     });
+
+                    // ★ 試合データ全体の監視を開始（バックグラウンドで常に最新を保持し、読み込みを爆速にする）
+                    const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
+                    onSnapshot(matchesRef, (snapshot) => {
+                        globalMatches = [];
+                        snapshot.forEach((doc) => {
+                            globalMatches.push({ id: doc.id, ...doc.data() });
+                        });
+                        isMatchesLoaded = true;
+                        
+                        // 開いている画面があれば自動的に再描画する
+                        if (document.getElementById('settings-modal') && document.getElementById('settings-modal').classList.contains('flex')) {
+                            window.loadMatchListForSettings();
+                        }
+                        if (document.getElementById('startup-match-list-container') && document.getElementById('startup-match-list-container').classList.contains('flex')) {
+                            window.renderViewerMatchList();
+                        }
+                        if (document.getElementById('startup-past-list-container') && document.getElementById('startup-past-list-container').classList.contains('flex')) {
+                            window.renderPastMatchList();
+                        }
+                    }, (error) => {
+                        console.error("試合データの取得エラー:", error);
+                    });
+
                 } catch (e) {
                     console.error("Firebase Login Error:", e);
                     window.showToast("通信エラーが発生しました", "error");
@@ -751,25 +779,21 @@
             document.getElementById('startup-match-list-container').classList.add('flex');
             
             await ensureFirebaseInitialized();
-            
-            try {
-                const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
-                const querySnapshot = await getDocs(matchesRef);
-                
-                let matches = [];
-                const todayStr = getJapaneseDateStr();
-                
-                querySnapshot.forEach((doc) => { 
-                    const d = doc.data();
-                    // 当日の試合のみを抽出
-                    if(d.matchDate === todayStr) {
-                        matches.push({ id: doc.id, ...d }); 
-                    }
-                });
-                
-                matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            window.renderViewerMatchList();
+        };
 
-                const listBody = document.getElementById('match-list-body');
+        window.renderViewerMatchList = () => {
+            const listBody = document.getElementById('match-list-body');
+            if (!isMatchesLoaded) {
+                listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>試合データを取得中...</div>';
+                if(window.lucide) lucide.createIcons();
+                return;
+            }
+
+            try {
+                let matches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr());
+                matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                
                 listBody.innerHTML = '';
                 
                 if (matches.length === 0) {
@@ -803,7 +827,7 @@
                 });
             } catch (e) {
                 console.error(e);
-                document.getElementById('match-list-body').innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ取得エラーが発生しました</div>';
+                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>';
             }
         };
 
@@ -813,25 +837,22 @@
             pastContainer.classList.remove('hidden');
             pastContainer.classList.add('flex');
             
-            const listBody = document.getElementById('past-match-list-body');
-            listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>データを取得中...</div>';
-            lucide.createIcons();
-
             await ensureFirebaseInitialized();
+            window.renderPastMatchList();
+        };
+
+        window.renderPastMatchList = () => {
+            const listBody = document.getElementById('past-match-list-body');
+            
+            if (!isMatchesLoaded) {
+                listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>データを取得中...</div>';
+                if(window.lucide) lucide.createIcons();
+                return;
+            }
 
             try {
-                const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
-                const querySnapshot = await getDocs(matchesRef);
-                let pastMatches = [];
                 const todayStr = getJapaneseDateStr();
-                
-                querySnapshot.forEach(doc => {
-                    const d = doc.data();
-                    // 今日以外の試合（かつ、設定中などで放置されていない「終了した」試合のみ）を抽出
-                    if (d.matchDate !== todayStr && d.matchStatus === 'match_over') {
-                        pastMatches.push({ id: doc.id, ...d });
-                    }
-                });
+                let pastMatches = globalMatches.filter(d => d.matchDate !== todayStr && d.matchStatus === 'match_over');
                 
                 if (pastMatches.length === 0) {
                     listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">過去の試合結果はありません</div>';
@@ -883,7 +904,7 @@
 
             } catch (e) {
                 console.error(e);
-                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ取得エラーが発生しました</div>';
+                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>';
             }
         };
 
@@ -994,22 +1015,15 @@
 
         window.loadMatchListForSettings = async () => {
             const listEl = document.getElementById('settings-match-list');
-            listEl.innerHTML = '<div class="text-center text-xs text-gray-500"><i data-lucide="loader-2" class="w-4 h-4 animate-spin inline"></i> 読み込み中...</div>';
-            lucide.createIcons();
+            
+            if (!isMatchesLoaded) {
+                listEl.innerHTML = '<div class="text-center text-xs text-gray-500"><i data-lucide="loader-2" class="w-4 h-4 animate-spin inline"></i> 読み込み中...</div>';
+                if(window.lucide) lucide.createIcons();
+                return;
+            }
             
             try {
-                const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
-                const querySnapshot = await getDocs(matchesRef);
-                let matches = [];
-                const todayStr = getJapaneseDateStr();
-                
-                querySnapshot.forEach((doc) => { 
-                    const d = doc.data();
-                    // 設定の管理画面も当日の試合のみ表示
-                    if (d.matchDate === todayStr) {
-                        matches.push({ id: doc.id, ...d }); 
-                    }
-                });
+                let matches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr());
                 matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
                 
                 if (matches.length === 0) {
@@ -1020,7 +1034,7 @@
                 listEl.innerHTML = '';
                 matches.forEach(m => {
                     const isOver = m.matchStatus === 'match_over';
-                    const statusLabel = isOver ? '<span class="text-[9px] text-gray-400 bg-gray-200 px-1 rounded font-bold">終了</span>' : '<span class="text-[9px] text-emerald-600 bg-emerald-100 px-1 rounded font-bold">進行中</span>';
+                    const statusLabel = isOver ? '<span class="text-[9px] text-gray-400 bg-gray-200 px-1 rounded font-bold">試合終了</span>' : '<span class="text-[9px] text-emerald-600 bg-emerald-100 px-1 rounded font-bold">進行中</span>';
                     const isCurrent = (m.id === state.roomName);
                     
                     const el = document.createElement('div');
@@ -1048,10 +1062,10 @@
                     `;
                     listEl.appendChild(el);
                 });
-                lucide.createIcons();
+                if(window.lucide) lucide.createIcons();
             } catch(e) {
                 console.error(e);
-                listEl.innerHTML = '<div class="text-center text-xs text-red-500">取得失敗</div>';
+                listEl.innerHTML = '<div class="text-center text-xs text-red-500">表示エラー</div>';
             }
         };
 
@@ -1341,11 +1355,11 @@
             const newBench = []; let hasError = false;
             cbs.forEach(cb => {
                 const id = cb.value; const input = document.getElementById(`bench-num-${id}`);
-                const number = input ? input.value : '';
-                if(!number) hasError = true; else saveNumber(id, number); 
+                let number = input ? input.value : '';
+                if(!number) number = '0'; // 入力忘れ対策：自動で0を割り当て
+                saveNumber(id, number); 
                 newBench.push({ id, number });
             });
-            if (hasError && newBench.length > 0) { window.showToast("背番号を入力してください", "error"); return; }
             state.roster.bench = newBench;
             window.closePlayersDBModal(); window.showToast("控え選手を登録しました", "success");
         };
@@ -1503,8 +1517,8 @@
 
         window.closeSettingsIfRunning = () => { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); }
 
-        window.saveSettings = async () => {
-            if (confirm('新たに試合を作成して保存しますか？\n(キャンセルを押すと現在開いている試合データを上書き保存します)')) {
+        window.saveSettings = async (isNew = false) => {
+            if (isNew) {
                 state.roomName = 'room_' + crypto.randomUUID().substring(0,8);
                 docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
                 
@@ -1625,9 +1639,9 @@
                     if(s && (s.A > 0 || s.B > 0 || s.winner)) {
                         const isWinA = s.winner === 'A'; const isWinB = s.winner === 'B';
                         const valA = s.A > 0 || s.winner ? s.A : 0; const valB = s.B > 0 || s.winner ? s.B : 0;
-                        const scoreAHtml = isWinA ? `<div style="display: grid; place-items: center; align-content: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valA}</div></div>` : `<div style="display: grid; place-items: center; align-content: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valA}</div></div>`;
-                        const scoreBHtml = isWinB ? `<div style="display: grid; place-items: center; align-content: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valB}</div></div>` : `<div style="display: grid; place-items: center; align-content: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valB}</div></div>`;
-                        setsHtml += `<tr><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 18px; font-weight: bold; line-height: 1;">${i}</div></td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreAHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreBHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 16px; font-weight: bold; color: #4b5563; line-height: 1.2;">${state.setStartTimes[i]||'--:--'}<br>|<br>${state.setEndTimes[i]||'--:--'}</div></td></tr>`;
+                        const scoreAHtml = isWinA ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valA}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valA}</div></div>`;
+                        const scoreBHtml = isWinB ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valB}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valB}</div></div>`;
+                        setsHtml += `<tr><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 18px; font-weight: bold; line-height: 1;">${i}</div></td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreAHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreBHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 16px; font-weight: bold; color: #4b5563; line-height: 1.2;"><span>${state.setStartTimes[i]||'--:--'}</span><span>|</span><span>${state.setEndTimes[i]||'--:--'}</span></div></td></tr>`;
                     }
                 }
 
@@ -1658,10 +1672,10 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 15%;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">セット</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 25%;"><div style="display: grid; place-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">開始 | 終了</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 15%;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">セット</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 25%;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">開始 | 終了</div></th>
                             </tr>
                         </thead>
                         <tbody>${setsHtml}</tbody>
