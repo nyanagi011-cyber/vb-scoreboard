@@ -48,7 +48,7 @@
             background-color: #ffffff;
             color: #111827;
             overflow: hidden; 
-            height: 100dvh; /* 自動リサイズ対応 */
+            height: 100dvh; 
             width: 100vw;
         }
         ::-webkit-scrollbar { display: none; }
@@ -81,7 +81,7 @@
         <!-- トップメニュー -->
         <div id="startup-menu" class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl flex flex-col items-center gap-5 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
-            <img src="goldenz.png" alt="Team Logo" class="w-20 h-20 object-contain drop-shadow-md">
+            <img src="goldenz.png" onerror="this.src='https://placehold.co/100x100/f5a623/ffffff?text=LOGO'" alt="Team Logo" class="w-20 h-20 object-contain drop-shadow-md">
             <h1 class="text-2xl font-black text-gray-900 text-center leading-tight">渡慶次GOLDENS<br>スコアボード</h1>
             
             <div class="w-full flex flex-col gap-3 pt-4">
@@ -98,7 +98,7 @@
                     <span class="text-[10px] font-normal opacity-80">(開催中の試合を選んで観戦)</span>
                 </button>
                 <button onclick="window.showAllMatchList()" id="btn-startup-past" class="py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center gap-1 mt-2 border border-gray-500">
-                    <div class="flex items-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> <span>試合一覧 (過去の試合・削除)</span></div>
+                    <div class="flex items-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> <span>試合一覧 (過去の確認・削除)</span></div>
                 </button>
             </div>
         </div>
@@ -167,7 +167,7 @@
             
             <!-- 閲覧者用ボタン -->
             <button id="btn-back-to-viewer-list" onclick="window.backToViewerListFromScoreboard()" class="hidden bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 text-emerald-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-xs font-bold active:scale-95 shadow-sm">
-                <i data-lucide="list" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">今日の試合一覧に戻る</span><span class="sm:hidden">一覧</span>
+                <i data-lucide="list" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">今日の試合一覧に戻る</span><span class="sm:hidden">一覧へ</span>
             </button>
         </div>
     </header>
@@ -177,16 +177,16 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-a);">
             <div class="team-header-box shrink-0 relative">
                 <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-a" src="goldenz.png" alt="A" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-a" src="goldenz.png" onerror="this.src='https://placehold.co/100x100/f5a623/ffffff?text=A'" alt="A" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <div class="flex flex-col justify-center h-full min-w-0">
                     <div id="ui-name-a" class="text-sm sm:text-lg font-black text-black whitespace-pre-wrap leading-tight text-left break-words truncate">渡慶次<br>GOLDENS</div>
                 </div>
-                <!-- マッチPバッジを枠内中央へ -->
+                <!-- マッチPバッジ -->
                 <div id="badge-a" class="absolute bottom-[-10px] left-1/2 -translate-x-1/2 font-black px-2 py-0.5 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast whitespace-nowrap">マッチP</div>
             </div>
 
-            <button id="score-btn-a" class="admin-only flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('A', 1)">
+            <button id="score-btn-a" class="flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('A', 1)">
                 <!-- チームAのサーブは中央側（右）へ移動 -->
                 <div id="serve-indicator-a" class="absolute top-2 right-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
@@ -236,16 +236,16 @@
         <div class="flex-1 flex flex-col min-w-0 h-full rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative" style="background-color: var(--color-b);">
             <div class="team-header-box shrink-0 relative">
                 <div class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-2 shrink-0">
-                    <img id="ui-logo-b" src="vb.png" alt="B" class="w-full h-full object-contain drop-shadow-md">
+                    <img id="ui-logo-b" src="vb.png" onerror="this.src='https://placehold.co/100x100/ef4444/ffffff?text=B'" alt="B" class="w-full h-full object-contain drop-shadow-md">
                 </div>
                 <div class="flex flex-col justify-center h-full min-w-0">
                     <div id="ui-name-b" class="text-sm sm:text-lg font-black text-black whitespace-pre-wrap leading-tight text-left break-words truncate">チームB</div>
                 </div>
-                <!-- マッチPバッジを枠内中央へ -->
+                <!-- マッチPバッジ -->
                 <div id="badge-b" class="absolute bottom-[-10px] left-1/2 -translate-x-1/2 font-black px-2 py-0.5 rounded-full text-[9px] sm:text-xs shadow-md hidden z-20 bg-red-600 border border-red-400 text-white animate-bounce-fast whitespace-nowrap">マッチP</div>
             </div>
 
-            <button id="score-btn-b" class="admin-only flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('B', 1)">
+            <button id="score-btn-b" class="flex-1 w-full flex flex-col relative transition-all group overflow-hidden min-h-0 cursor-pointer p-2 sm:p-4" onclick="window.updateScore('B', 1)">
                 <!-- チームBのサーブは中央側（左）のまま -->
                 <div id="serve-indicator-b" class="absolute top-2 left-2 flex items-center gap-1 px-2.5 py-1 bg-white text-black rounded-full font-black text-[9px] sm:text-xs shadow-md transition-opacity duration-300 z-20">
                     <i data-lucide="volleyball" class="w-3 h-3 sm:w-3 sm:h-3 fill-black"></i> サーブ
@@ -285,7 +285,7 @@
             <h2 id="set-winner-text" class="text-xl sm:text-2xl font-black text-gray-900 leading-tight">チームA がセット獲得！</h2>
             <div id="set-result-score" class="text-4xl sm:text-5xl font-black text-gray-800 my-2 font-mono tracking-widest shrink-0">25 - 23</div>
             
-            <button id="btn-next-set" onclick="window.nextSet()" class="admin-only w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 hidden">
+            <button id="btn-next-set" onclick="window.nextSet()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 hidden">
                 次のセットへ進む <i data-lucide="arrow-right" class="w-6 h-6"></i>
             </button>
 
@@ -293,7 +293,7 @@
                 <button onclick="window.shareResultImage()" id="btn-save-img" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
                     <i data-lucide="image" class="w-5 h-5"></i> 試合結果を画像で保存・共有
                 </button>
-                <button onclick="window.endMatch()" class="admin-only w-full py-3 bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-sm rounded-2xl active:scale-95 transition-all flex items-center justify-center gap-1">
+                <button onclick="window.endMatch()" class="w-full py-3 bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-sm rounded-2xl active:scale-95 transition-all flex items-center justify-center gap-1">
                     <i data-lucide="settings" class="w-4 h-4"></i> 続けて次の試合を設定・開始する
                 </button>
                 <button onclick="window.backToStartupFromEnd()" class="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-sm rounded-2xl active:scale-95 transition-all flex items-center justify-center gap-1">
@@ -316,101 +316,103 @@
                 </button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-3 sm:p-4 pb-0 custom-scrollbar">
                 
-                <!-- 今日の試合一覧を最上部に配置 -->
-                <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl mb-3">
+                <!-- 今日の試合一覧 -->
+                <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl mb-4">
                     <h3 class="text-gray-300 font-bold text-sm mb-2 flex items-center gap-1">
                         <i data-lucide="list" class="w-4 h-4"></i> 今日の試合一覧
                     </h3>
-                    <div id="settings-match-list" class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                    <div id="settings-match-list" class="space-y-1.5 overflow-y-visible custom-scrollbar pr-1">
                         <div class="text-center text-xs text-gray-500">読み込み中...</div>
                     </div>
                 </div>
             
-                <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-2">
-                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                        <div class="flex-1">
-                            <label class="block text-xs text-gray-400 font-bold mb-1">試合名 / 大会名</label>
-                            <input type="text" id="input-match-name" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-3 py-2 text-white outline-none font-bold text-sm" value="練習試合">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-xs text-gray-400 font-bold mb-1">開催場所</label>
-                            <input type="text" id="input-location" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-3 py-2 text-white outline-none font-bold text-sm" value="体育館">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-3 flex flex-col">
-                        <h3 class="text-gray-300 font-bold text-sm border-b border-gray-700 pb-1">左側 (Team A)</h3>
-                        
-                        <button onclick="window.openRosterModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs sm:text-sm rounded-xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-indigo-400">
-                            <i data-lucide="users" class="w-4 h-4"></i> 選手登録・メンバー設定
-                        </button>
-
-                        <div class="flex gap-2 items-start mt-1">
+                <div class="space-y-4">
+                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-2">
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
                             <div class="flex-1">
-                                <label class="block text-[10px] text-gray-400 font-bold mb-1">チーム名 (2行まで)</label>
-                                <textarea id="input-name-a" rows="2" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white outline-none resize-none font-bold text-sm leading-tight">渡慶次&#13;&#10;GOLDENS</textarea>
+                                <label class="block text-xs text-gray-400 font-bold mb-1">試合名 / 大会名</label>
+                                <input type="text" id="input-match-name" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-3 py-2 text-white outline-none font-bold text-sm" value="練習試合">
                             </div>
-                            <div class="w-12 shrink-0 flex flex-col justify-between gap-1">
-                                <div>
-                                    <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">色</label>
-                                    <input type="hidden" id="input-color-a-val" value="#f5a623">
-                                    <button onclick="window.openColorModal('A')" id="btn-color-a" class="w-full h-7 rounded-md cursor-pointer border border-gray-600 shadow-inner text-[9px] font-bold text-white" style="background-color: #f5a623;">変更</button>
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">ロゴ</label>
-                                    <label class="w-full h-7 rounded-md border border-gray-600 bg-gray-800 flex items-center justify-center cursor-pointer text-gray-400 hover:text-white transition-colors" title="ロゴ画像選択">
-                                         <input type="file" id="input-logo-a" accept="image/*" class="hidden">
-                                         <i data-lucide="image" class="w-3.5 h-3.5"></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-3">
-                        <h3 class="text-gray-300 font-bold text-sm border-b border-gray-700 pb-1">右側 (Team B)</h3>
-                        <div class="flex gap-2 items-start">
                             <div class="flex-1">
-                                <label class="block text-[10px] text-gray-400 font-bold mb-1">チーム名 (2行まで)</label>
-                                <textarea id="input-name-b" rows="2" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white outline-none resize-none font-bold text-sm leading-tight">チームB</textarea>
+                                <label class="block text-xs text-gray-400 font-bold mb-1">開催場所</label>
+                                <input type="text" id="input-location" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-3 py-2 text-white outline-none font-bold text-sm" value="体育館">
                             </div>
-                            <div class="w-12 shrink-0 flex flex-col justify-between gap-1">
-                                <div>
-                                    <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">色</label>
-                                    <input type="hidden" id="input-color-b-val" value="#ef4444">
-                                    <button onclick="window.openColorModal('B')" id="btn-color-b" class="w-full h-7 rounded-md cursor-pointer border border-gray-600 shadow-inner text-[9px] font-bold text-white" style="background-color: #ef4444;">変更</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                        <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-3 flex flex-col">
+                            <h3 class="text-gray-300 font-bold text-sm border-b border-gray-700 pb-1">左側 (Team A)</h3>
+                            
+                            <button onclick="window.openRosterModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs sm:text-sm rounded-xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-indigo-400">
+                                <i data-lucide="users" class="w-4 h-4"></i> 選手登録・メンバー設定
+                            </button>
+
+                            <div class="flex gap-2 items-start mt-1">
+                                <div class="flex-1">
+                                    <label class="block text-[10px] text-gray-400 font-bold mb-1">チーム名 (2行まで)</label>
+                                    <textarea id="input-name-a" rows="2" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white outline-none resize-none font-bold text-sm leading-tight">渡慶次&#13;&#10;GOLDENS</textarea>
                                 </div>
-                                <div>
-                                    <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">ロゴ</label>
-                                    <label class="w-full h-7 rounded-md border border-gray-600 bg-gray-800 flex items-center justify-center cursor-pointer text-gray-400 hover:text-white transition-colors" title="ロゴ画像選択">
-                                         <input type="file" id="input-logo-b" accept="image/*" class="hidden">
-                                         <i data-lucide="image" class="w-3.5 h-3.5"></i>
-                                    </label>
+                                <div class="w-12 shrink-0 flex flex-col justify-between gap-1">
+                                    <div>
+                                        <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">色</label>
+                                        <input type="hidden" id="input-color-a-val" value="#f5a623">
+                                        <button onclick="window.openColorModal('A')" id="btn-color-a" class="w-full h-7 rounded-md cursor-pointer border border-gray-600 shadow-inner text-[9px] font-bold text-white" style="background-color: #f5a623;">変更</button>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">ロゴ</label>
+                                        <label class="w-full h-7 rounded-md border border-gray-600 bg-gray-800 flex items-center justify-center cursor-pointer text-gray-400 hover:text-white transition-colors" title="ロゴ画像選択">
+                                             <input type="file" id="input-logo-a" accept="image/*" class="hidden">
+                                             <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl space-y-3">
+                            <h3 class="text-gray-300 font-bold text-sm border-b border-gray-700 pb-1">右側 (Team B)</h3>
+                            <div class="flex gap-2 items-start">
+                                <div class="flex-1">
+                                    <label class="block text-[10px] text-gray-400 font-bold mb-1">チーム名 (2行まで)</label>
+                                    <textarea id="input-name-b" rows="2" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white outline-none resize-none font-bold text-sm leading-tight">チームB</textarea>
+                                </div>
+                                <div class="w-12 shrink-0 flex flex-col justify-between gap-1">
+                                    <div>
+                                        <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">色</label>
+                                        <input type="hidden" id="input-color-b-val" value="#ef4444">
+                                        <button onclick="window.openColorModal('B')" id="btn-color-b" class="w-full h-7 rounded-md cursor-pointer border border-gray-600 shadow-inner text-[9px] font-bold text-white" style="background-color: #ef4444;">変更</button>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] text-gray-400 font-bold mb-0.5 text-center">ロゴ</label>
+                                        <label class="w-full h-7 rounded-md border border-gray-600 bg-gray-800 flex items-center justify-center cursor-pointer text-gray-400 hover:text-white transition-colors" title="ロゴ画像選択">
+                                             <input type="file" id="input-logo-b" accept="image/*" class="hidden">
+                                             <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl">
-                        <label class="block text-xs text-gray-400 font-bold mb-1">セット数</label>
-                        <select id="input-format" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white text-sm outline-none font-bold">
-                            <option value="3" selected>3セット (2先取)</option>
-                            <option value="5">5セット (3先取)</option>
-                        </select>
-                    </div>
-                    <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl">
-                        <label class="block text-xs text-gray-400 font-bold mb-1">基本点数</label>
-                        <select id="input-target" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white text-sm outline-none font-bold">
-                            <option value="15">15点マッチ</option>
-                            <option value="21" selected>21点マッチ</option>
-                            <option value="25">25点マッチ</option>
-                        </select>
+                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                        <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl">
+                            <label class="block text-xs text-gray-400 font-bold mb-1">セット数</label>
+                            <select id="input-format" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white text-sm outline-none font-bold">
+                                <option value="3" selected>3セット (2先取)</option>
+                                <option value="5">5セット (3先取)</option>
+                            </select>
+                        </div>
+                        <div class="p-3 bg-gray-900 border border-gray-700 rounded-2xl">
+                            <label class="block text-xs text-gray-400 font-bold mb-1">基本点数</label>
+                            <select id="input-target" class="w-full bg-[#060c18] border border-gray-700 rounded-lg px-2 py-1.5 text-white text-sm outline-none font-bold">
+                                <option value="15">15点マッチ</option>
+                                <option value="21" selected>21点マッチ</option>
+                                <option value="25">25点マッチ</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -418,13 +420,16 @@
             <!-- フッターボタン (新規作成時用) -->
             <div id="settings-footer-new" class="sticky-footer bg-[#0b162c] border-t border-[#1a2c4e] p-3 flex flex-col gap-2">
                 <button onclick="window.saveSettingsAndStart()" class="w-full py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="play" class="w-5 h-5"></i> 試合を開始する
+                    <i data-lucide="play" class="w-5 h-5"></i> 新たに試合を追加して開始
                 </button>
             </div>
             <!-- フッターボタン (既存編集・管理時用) -->
-            <div id="settings-footer-edit" class="sticky-footer bg-[#0b162c] border-t border-[#1a2c4e] p-3 flex flex-col gap-2 hidden">
-                <button onclick="window.saveSettingsAndUpdate()" class="w-full py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i> 更新して管理を続ける
+            <div id="settings-footer-edit" class="sticky-footer bg-[#0b162c] border-t border-[#1a2c4e] p-3 flex gap-2 hidden">
+                <button onclick="window.saveSettingsAndUpdate()" class="flex-1 py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all flex justify-center items-center gap-1">
+                    <i data-lucide="save" class="w-4 h-4"></i> 更新して試合に戻る
+                </button>
+                <button onclick="window.saveSettingsAndStart()" class="flex-1 py-3 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all flex justify-center items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> 新たな試合として追加
                 </button>
             </div>
         </div>
@@ -461,7 +466,7 @@
     <div id="result-image-modal" class="fixed inset-0 bg-black/95 z-[220] hidden flex-col items-center p-2 sm:p-4">
         <div class="w-full flex justify-between items-center p-2 shrink-0 max-w-lg mx-auto">
             <div class="flex gap-2">
-                <button onclick="window.closeResultImageModal()" class="bg-gray-800 text-white px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold active:scale-95 flex items-center gap-1"><i data-lucide="chevron-left" class="w-4 h-4"></i> 戻る</button>
+                <button onclick="window.closeResultImageModal()" class="bg-gray-800 text-white px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold active:scale-95 flex items-center gap-1"><i data-lucide="chevron-left" class="w-4 h-4"></i> 一覧に戻る</button>
                 <button onclick="window.backToStartupFromImage()" class="bg-blue-600 text-white px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold active:scale-95 flex items-center gap-1"><i data-lucide="home" class="w-4 h-4"></i> 最初の画面へ</button>
             </div>
             <button onclick="window.shareCurrentResultImage()" class="bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold active:scale-95 flex items-center gap-1 shadow-lg"><i data-lucide="share-2" class="w-4 h-4"></i> 保存/共有</button>
@@ -630,24 +635,14 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ★ Firebase の保存先を完全に固定するためのID（絶対に変更しないでください）
         const FIXED_APP_ID = 'volleyball-score-fixed-db-v1';
-
-        // 背番号記憶機能
         const LOCAL_STORAGE_NUMBERS_KEY = 'volleyball-player-numbers-v3';
-        function getSavedNumber(playerId) {
-            try { const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NUMBERS_KEY) || '{}'); return data[playerId] || ''; } catch(e) { return ''; }
-        }
-        function saveNumber(playerId, number) {
-            try { const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NUMBERS_KEY) || '{}'); data[playerId] = number; localStorage.setItem(LOCAL_STORAGE_NUMBERS_KEY, JSON.stringify(data)); } catch(e) {}
-        }
-        window.clearSavedNumbers = () => {
-            if(confirm('記憶している背番号をすべてリセットしますか？')) {
-                localStorage.removeItem(LOCAL_STORAGE_NUMBERS_KEY); window.showToast('背番号をリセットしました', 'success');
-            }
-        };
+
+        function getSavedNumber(playerId) { try { const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NUMBERS_KEY) || '{}'); return data[playerId] || ''; } catch(e) { return ''; } }
+        function saveNumber(playerId, number) { try { const data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NUMBERS_KEY) || '{}'); data[playerId] = number; localStorage.setItem(LOCAL_STORAGE_NUMBERS_KEY, JSON.stringify(data)); } catch(e) {} }
+        window.clearSavedNumbers = () => { if(confirm('記憶している背番号をすべてリセットしますか？')) { localStorage.removeItem(LOCAL_STORAGE_NUMBERS_KEY); window.showToast('背番号をリセットしました', 'success'); } };
 
         const POSITIONS = { center: "センター", setter: "セッター", left: "レフト", backLeft: "バックレフト", right: "ライト", backRight: "バックライト" };
 
@@ -664,7 +659,7 @@
                 setStartTimes: {1: null, 2: null, 3: null, 4: null, 5: null}, setEndTimes: {1: null, 2: null, 3: null, 4: null, 5: null},
                 matchDate: getJapaneseDateStr(), matchStatus: "setting", 
                 roster: { starters: { center: null, setter: null, left: null, backLeft: null, right: null, backRight: null }, bench: [] },
-                currentCourt: [], substitutions: [], updatedAt: Date.now()
+                currentCourt: [], substitutions: [], updatedAt: Date.now(), resultImage: null
             };
         }
 
@@ -680,12 +675,11 @@
         let app, auth, db, docRef, currentUser;
         let globalPlayers = []; 
         let allMatchManageMode = false;
-
         let globalMatches = [];
         let isMatchesLoaded = false;
-        
         let currentMatchUnsubscribe = null;
-        let viewerModeOnly = false; // 閲覧者専用モードフラグ
+        let viewerModeOnly = false;
+        const deletedMatchIds = new Set(); // 削除済みブロック用リスト
 
         function getJapaneseDateStr() {
             try { const formatter = new Intl.DateTimeFormat('ja-JP', { era: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'japanese' }); return formatter.format(new Date()); } 
@@ -706,17 +700,10 @@
 
         // ================= アプリの初期化とFirebase接続 =================
         async function ensureFirebaseInitialized() {
-            if (!app) {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-            }
+            if (!app) { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); }
             if (!currentUser) {
                 try {
-                    const cred = await signInAnonymously(auth);
-                    currentUser = cred.user;
-                    
-                    // 選手データベースの初期ロードと監視開始
+                    const cred = await signInAnonymously(auth); currentUser = cred.user;
                     const playersRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
                     onSnapshot(playersRef, (snap) => {
                         if (snap.exists()) {
@@ -725,135 +712,78 @@
                                 globalPlayers = data.players;
                                 if (document.getElementById('players-db-modal').classList.contains('flex')) renderPlayersDBList();
                             }
-                        } else {
-                            setDoc(playersRef, { players: [] }).catch(e => console.error(e));
-                        }
-                    }, (error) => {
-                        console.error("選手データの取得エラー:", error);
-                        window.showToast("データベースへのアクセスが拒否されました", "error");
-                    });
+                        } else { setDoc(playersRef, { players: [] }).catch(e => console.error(e)); }
+                    }, (error) => { console.error("選手データの取得エラー:", error); window.showToast("データベースへのアクセスが拒否されました", "error"); });
 
-                    // ★ 試合データ全体の監視を開始（バックグラウンドで常に最新を保持し、読み込みを爆速にする）
+                    // 試合全体の監視
                     const matchesRef = collection(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches');
                     onSnapshot(matchesRef, (snapshot) => {
                         globalMatches = [];
                         snapshot.forEach((doc) => {
-                            globalMatches.push({ id: doc.id, ...doc.data() });
+                            if (!deletedMatchIds.has(doc.id)) {
+                                globalMatches.push({ id: doc.id, ...doc.data() });
+                            }
                         });
                         isMatchesLoaded = true;
                         
-                        // 開いている画面があれば自動的に再描画する
-                        if (document.getElementById('settings-modal') && document.getElementById('settings-modal').classList.contains('flex')) {
-                            window.loadMatchListForSettings();
-                        }
-                        if (document.getElementById('startup-match-list-container') && document.getElementById('startup-match-list-container').classList.contains('flex')) {
-                            window.renderViewerMatchList();
-                        }
-                        if (document.getElementById('startup-all-list-container') && document.getElementById('startup-all-list-container').classList.contains('flex')) {
-                            window.renderAllMatchList();
-                        }
-                    }, (error) => {
-                        console.error("試合データの取得エラー:", error);
-                    });
-
-                } catch (e) {
-                    console.error("Firebase Login Error:", e);
-                    window.showToast("通信エラーが発生しました", "error");
-                }
+                        if (document.getElementById('settings-modal') && document.getElementById('settings-modal').classList.contains('flex')) window.loadMatchListForSettings();
+                        if (document.getElementById('startup-match-list-container') && document.getElementById('startup-match-list-container').classList.contains('flex')) window.renderViewerMatchList();
+                        if (document.getElementById('startup-all-list-container') && document.getElementById('startup-all-list-container').classList.contains('flex')) window.renderAllMatchList();
+                    }, (error) => { console.error("試合データの取得エラー:", error); });
+                } catch (e) { console.error("Firebase Login Error:", e); window.showToast("通信エラーが発生しました", "error"); }
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            ensureFirebaseInitialized(); // 起動時に裏側でログインを済ませておく
+            ensureFirebaseInitialized();
             try { lucide.createIcons(); } catch(e){}
         });
 
         // ================= アプリ入室ロジック =================
-        // 1. 新しく試合を始める（管理者）
         window.startNewMatch = async () => {
-            const btn = document.getElementById('btn-startup-new');
-            const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 準備中...'; lucide.createIcons();
+            const btn = document.getElementById('btn-startup-new'); const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 準備中...'; lucide.createIcons();
+            await ensureFirebaseInitialized(); if (!currentUser) { window.showToast("認証に失敗しました", "error"); btn.innerHTML = origHtml; return; }
             
-            await ensureFirebaseInitialized();
-            if (!currentUser) { window.showToast("認証に失敗しました", "error"); btn.innerHTML = origHtml; return; }
+            viewerModeOnly = false; state = createEmptyState(); state.roomName = 'room_' + crypto.randomUUID().substring(0,8); fillSettingsForm(state);
             
-            viewerModeOnly = false;
-            state = createEmptyState();
-            state.roomName = 'room_' + crypto.randomUUID().substring(0,8);
+            document.getElementById('settings-footer-new').classList.remove('hidden'); document.getElementById('settings-footer-edit').classList.add('hidden');
+            document.getElementById('startup-overlay').classList.add('hidden'); document.getElementById('startup-overlay').classList.remove('flex');
+            document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex');
             
-            fillSettingsForm(state);
-            
-            // フッターの切り替え (新規開始用)
-            document.getElementById('settings-footer-new').classList.remove('hidden');
-            document.getElementById('settings-footer-edit').classList.add('hidden');
-            
-            document.getElementById('startup-overlay').classList.add('hidden');
-            document.getElementById('startup-overlay').classList.remove('flex');
-            
-            document.getElementById('settings-modal').classList.remove('hidden');
-            document.getElementById('settings-modal').classList.add('flex');
-            
-            window.loadMatchListForSettings();
-            
-            btn.innerHTML = origHtml; lucide.createIcons();
+            window.loadMatchListForSettings(); btn.innerHTML = origHtml; lucide.createIcons();
         };
 
-        // 2. 既存の試合を管理する（管理者）
         window.manageMatches = async () => {
-            const btn = document.getElementById('btn-startup-manage');
-            const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 準備中...'; lucide.createIcons();
-            
-            await ensureFirebaseInitialized();
-            if (!currentUser) { window.showToast("認証に失敗しました", "error"); btn.innerHTML = origHtml; return; }
+            const btn = document.getElementById('btn-startup-manage'); const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> 準備中...'; lucide.createIcons();
+            await ensureFirebaseInitialized(); if (!currentUser) { window.showToast("認証に失敗しました", "error"); btn.innerHTML = origHtml; return; }
             
             viewerModeOnly = false;
-            
-            // 直近の今日の試合があればそれをロード、なければ空で用意
             const todayMatches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr());
             todayMatches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
             
-            if (todayMatches.length > 0) {
-                state = { ...createEmptyState(), ...todayMatches[0] };
-                state.roomName = todayMatches[0].id;
-            } else {
-                state = createEmptyState();
-                state.roomName = 'room_' + crypto.randomUUID().substring(0,8);
-            }
-            state.role = 'admin';
-            
-            fillSettingsForm(state);
+            if (todayMatches.length > 0) { state = { ...createEmptyState(), ...todayMatches[0] }; state.roomName = todayMatches[0].id; } 
+            else { state = createEmptyState(); state.roomName = 'room_' + crypto.randomUUID().substring(0,8); }
+            state.role = 'admin'; fillSettingsForm(state);
             
             docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
             setupMatchListener();
             
-            // フッターの切り替え (既存編集用)
-            document.getElementById('settings-footer-new').classList.add('hidden');
-            document.getElementById('settings-footer-edit').classList.remove('hidden');
+            document.getElementById('settings-footer-new').classList.add('hidden'); document.getElementById('settings-footer-edit').classList.remove('hidden');
+            document.getElementById('startup-overlay').classList.add('hidden'); document.getElementById('startup-overlay').classList.remove('flex');
+            document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex');
             
-            document.getElementById('startup-overlay').classList.add('hidden');
-            document.getElementById('startup-overlay').classList.remove('flex');
-            
-            document.getElementById('settings-modal').classList.remove('hidden');
-            document.getElementById('settings-modal').classList.add('flex');
-            
-            window.loadMatchListForSettings();
-            
-            btn.innerHTML = origHtml; lucide.createIcons();
+            window.loadMatchListForSettings(); btn.innerHTML = origHtml; lucide.createIcons();
         };
 
         function fillSettingsForm(s) {
-            document.getElementById('input-match-name').value = s.settings.matchName;
-            document.getElementById('input-location').value = s.settings.location;
-            document.getElementById('input-name-a').value = s.teamA.name;
-            document.getElementById('input-color-a-val').value = s.teamA.color; document.getElementById('btn-color-a').style.backgroundColor = s.teamA.color;
-            document.getElementById('input-name-b').value = s.teamB.name;
-            document.getElementById('input-color-b-val').value = s.teamB.color; document.getElementById('btn-color-b').style.backgroundColor = s.teamB.color;
+            document.getElementById('input-match-name').value = s.settings.matchName; document.getElementById('input-location').value = s.settings.location;
+            document.getElementById('input-name-a').value = s.teamA.name; document.getElementById('input-color-a-val').value = s.teamA.color; document.getElementById('btn-color-a').style.backgroundColor = s.teamA.color;
+            document.getElementById('input-name-b').value = s.teamB.name; document.getElementById('input-color-b-val').value = s.teamB.color; document.getElementById('btn-color-b').style.backgroundColor = s.teamB.color;
             document.getElementById('input-format').value = s.settings.format; document.getElementById('input-target').value = s.settings.targetPoints;
         }
 
         function applySettingsFormToState() {
-            state.settings.matchName = document.getElementById('input-match-name').value || "練習試合";
-            state.settings.location = document.getElementById('input-location').value || "体育館";
+            state.settings.matchName = document.getElementById('input-match-name').value || "練習試合"; state.settings.location = document.getElementById('input-location').value || "体育館";
             state.teamA.name = document.getElementById('input-name-a').value || "渡慶次\nGOLDENS"; state.teamA.color = document.getElementById('input-color-a-val').value || "#f5a623";
             state.teamB.name = document.getElementById('input-name-b').value || "チームB"; state.teamB.color = document.getElementById('input-color-b-val').value || "#ef4444";
             state.settings.format = parseInt(document.getElementById('input-format').value); state.settings.targetPoints = parseInt(document.getElementById('input-target').value);
@@ -861,52 +791,27 @@
 
         window.showViewerMatchList = async () => {
             document.getElementById('startup-menu').classList.add('hidden');
-            
-            if(document.getElementById('startup-all-list-container')) {
-                document.getElementById('startup-all-list-container').classList.add('hidden');
-                document.getElementById('startup-all-list-container').classList.remove('flex');
-            }
-
-            document.getElementById('startup-match-list-container').classList.remove('hidden');
-            document.getElementById('startup-match-list-container').classList.add('flex');
-            
-            await ensureFirebaseInitialized();
-            window.renderViewerMatchList();
+            if(document.getElementById('startup-all-list-container')) { document.getElementById('startup-all-list-container').classList.add('hidden'); document.getElementById('startup-all-list-container').classList.remove('flex'); }
+            document.getElementById('startup-match-list-container').classList.remove('hidden'); document.getElementById('startup-match-list-container').classList.add('flex');
+            await ensureFirebaseInitialized(); window.renderViewerMatchList();
         };
 
         window.renderViewerMatchList = () => {
             const listBody = document.getElementById('match-list-body');
-            if (!isMatchesLoaded) {
-                listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>試合データを取得中...</div>';
-                if(window.lucide) lucide.createIcons();
-                return;
-            }
+            if (!isMatchesLoaded) { listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>試合データを取得中...</div>'; if(window.lucide) lucide.createIcons(); return; }
 
             try {
                 let matches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr());
                 matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-                
                 listBody.innerHTML = '';
                 
                 if (matches.length === 0) {
-                    listBody.innerHTML = `
-                        <div class="text-center py-10 flex flex-col items-center gap-5">
-                            <div class="text-sm text-gray-500 font-bold">現在公開されている今日の試合はありません</div>
-                            <button onclick="window.showAllMatchList()" class="py-3 px-5 w-full bg-gray-600 hover:bg-gray-500 transition-colors text-white rounded-xl font-bold text-sm shadow-md active:scale-95 flex items-center justify-center gap-2">
-                                <i data-lucide="list" class="w-4 h-4"></i> 過去の試合結果を確認する
-                            </button>
-                            <button onclick="window.backToStartupMenu()" class="py-3 px-5 w-full bg-gray-200 hover:bg-gray-300 transition-colors text-gray-800 rounded-xl font-bold text-sm active:scale-95 flex items-center justify-center gap-2">
-                                <i data-lucide="home" class="w-4 h-4"></i> 最初の画面へ
-                            </button>
-                        </div>
-                    `;
-                    if(window.lucide) lucide.createIcons();
-                    return;
+                    listBody.innerHTML = `<div class="text-center py-10 flex flex-col items-center gap-5"><div class="text-sm text-gray-500 font-bold">現在公開されている今日の試合はありません</div><button onclick="window.showAllMatchList()" class="py-3 px-5 w-full bg-gray-600 hover:bg-gray-500 transition-colors text-white rounded-xl font-bold text-sm shadow-md active:scale-95 flex items-center justify-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> 過去の試合結果を確認する</button><button onclick="window.backToStartupMenu()" class="py-3 px-5 w-full bg-gray-200 hover:bg-gray-300 transition-colors text-gray-800 rounded-xl font-bold text-sm active:scale-95 flex items-center justify-center gap-2"><i data-lucide="home" class="w-4 h-4"></i> 最初の画面へ</button></div>`;
+                    if(window.lucide) lucide.createIcons(); return;
                 }
 
                 matches.forEach(m => {
-                    const isOver = m.matchStatus === 'match_over';
-                    const isPlaying = m.matchStatus === 'playing' || m.matchStatus === 'set_over';
+                    const isOver = m.matchStatus === 'match_over'; const isPlaying = m.matchStatus === 'playing' || m.matchStatus === 'set_over';
                     let statusLabel = '';
                     if(isOver) statusLabel = '<span class="bg-gray-200 text-gray-500 px-2 py-0.5 rounded text-[10px]">終了</span>';
                     else if(isPlaying) statusLabel = '<span class="bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded text-[10px] animate-pulse">試合中</span>';
@@ -914,9 +819,7 @@
 
                     const html = `
                         <div onclick="window.enterAsViewer('${m.id}')" class="p-3 border-2 border-gray-100 rounded-xl hover:border-emerald-300 active:bg-emerald-50 cursor-pointer transition-colors bg-white shadow-sm ${isOver ? 'opacity-70' : ''}">
-                            <div class="flex justify-between items-start mb-1">
-                                <div class="text-xs font-black text-gray-900 flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span></div>
-                            </div>
+                            <div class="flex justify-between items-start mb-1"><div class="text-xs font-black text-gray-900 flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span></div></div>
                             <div class="text-[10px] text-gray-500 font-bold mb-1">${m.settings?.location || ''}</div>
                             <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
                                 <div class="text-xs font-black truncate flex-1 text-right pr-2" style="color: ${m.teamA?.color || '#000'}">${m.teamA?.name?.replace(/\n/g, '') || 'TeamA'}</div>
@@ -927,90 +830,48 @@
                                 </div>
                                 <div class="text-xs font-black truncate flex-1 text-left pl-2" style="color: ${m.teamB?.color || '#000'}">${m.teamB?.name?.replace(/\n/g, '') || 'TeamB'}</div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     listBody.innerHTML += html;
                 });
-            } catch (e) {
-                console.error(e);
-                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>';
-            }
+            } catch (e) { console.error(e); listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>'; }
         };
 
         window.showAllMatchList = async () => {
             document.getElementById('startup-menu').classList.add('hidden');
-            document.getElementById('startup-match-list-container').classList.add('hidden');
-            document.getElementById('startup-match-list-container').classList.remove('flex');
-            
-            const container = document.getElementById('startup-all-list-container');
-            container.classList.remove('hidden');
-            container.classList.add('flex');
-            
-            await ensureFirebaseInitialized();
-            window.renderAllMatchList();
+            document.getElementById('startup-match-list-container').classList.add('hidden'); document.getElementById('startup-match-list-container').classList.remove('flex');
+            const container = document.getElementById('startup-all-list-container'); container.classList.remove('hidden'); container.classList.add('flex');
+            await ensureFirebaseInitialized(); window.renderAllMatchList();
         };
 
         window.renderAllMatchList = () => {
             const listBody = document.getElementById('all-match-list-body');
-            
-            if (!isMatchesLoaded) {
-                listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>データを取得中...</div>';
-                if(window.lucide) lucide.createIcons();
-                return;
-            }
+            if (!isMatchesLoaded) { listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mb-2 text-gray-400"></i>データを取得中...</div>'; if(window.lucide) lucide.createIcons(); return; }
 
             try {
                 let allMatches = [...globalMatches];
-                
-                if (allMatches.length === 0) {
-                    listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">試合データはありません</div>';
-                    return;
-                }
+                if (allMatches.length === 0) { listBody.innerHTML = '<div class="text-center text-sm text-gray-500 font-bold py-8">試合データはありません</div>'; return; }
 
-                // 日付でグループ化する
                 const groups = {};
-                allMatches.forEach(m => {
-                    const d = m.matchDate || '日付不明';
-                    if(!groups[d]) groups[d] = [];
-                    groups[d].push(m);
-                });
-                
-                const sortedDates = Object.keys(groups).sort((a, b) => {
-                    const maxA = Math.max(...groups[a].map(m => m.updatedAt || 0));
-                    const maxB = Math.max(...groups[b].map(m => m.updatedAt || 0));
-                    return maxB - maxA;
-                });
+                allMatches.forEach(m => { const d = m.matchDate || '日付不明'; if(!groups[d]) groups[d] = []; groups[d].push(m); });
+                const sortedDates = Object.keys(groups).sort((a, b) => { const maxA = Math.max(...groups[a].map(m => m.updatedAt || 0)); const maxB = Math.max(...groups[b].map(m => m.updatedAt || 0)); return maxB - maxA; });
 
                 listBody.innerHTML = '';
                 sortedDates.forEach(date => {
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = "mb-4";
+                    const groupDiv = document.createElement('div'); groupDiv.className = "mb-4";
                     let html = `<h3 class="text-sm font-black text-gray-700 border-b-2 border-gray-200 pb-1 mb-2">${date}</h3><div class="space-y-2">`;
-                    
                     groups[date].sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0)).forEach(m => {
                         const isOver = m.matchStatus === 'match_over';
                         const statusLabel = isOver ? '<span class="text-[9px] text-gray-400 bg-gray-200 px-1 rounded font-bold">終了</span>' : '<span class="text-[9px] text-emerald-600 bg-emerald-100 px-1 rounded font-bold">進行中</span>';
-                        
                         let clickAction = '';
-                        if (!allMatchManageMode) {
-                            if (isOver) {
-                                clickAction = `onclick="window.showMatchResultImageFromPast('${m.id}')"`;
-                            } else {
-                                clickAction = `onclick="window.enterAsViewer('${m.id}')"`;
-                            }
-                        }
+                        if (!allMatchManageMode) { if (isOver) { clickAction = `onclick="window.showMatchResultImageFromPast('${m.id}')"`; } else { clickAction = `onclick="window.enterAsViewer('${m.id}')"`; } }
 
-                        // ★アイコンが出ない場合も考慮して、ボタンに「削除」という文字を確実に追加
                         const deleteBtnHtml = allMatchManageMode ? `<button onclick="window.deleteMatchFromAllList('${m.id}', event)" class="px-4 bg-red-600 text-white hover:bg-red-500 rounded-r-xl transition-colors z-10 flex-shrink-0 flex items-center justify-center gap-1 font-bold text-xs"><i data-lucide="trash-2" class="w-4 h-4"></i>削除</button>` : '';
                         const cursorClass = allMatchManageMode ? '' : 'cursor-pointer hover:border-gray-400 active:bg-gray-50';
 
                         html += `
                             <div class="flex border border-gray-200 rounded-xl transition-colors bg-white shadow-sm overflow-hidden">
                                 <div ${clickAction} class="p-3 flex-1 min-w-0 ${cursorClass}">
-                                    <div class="flex justify-between items-start mb-1">
-                                        <div class="text-xs font-black text-gray-900 flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span></div>
-                                        <span class="text-[9px] text-gray-400 font-bold">${m.settings?.location || ''}</span>
-                                    </div>
+                                    <div class="flex justify-between items-start mb-1"><div class="text-xs font-black text-gray-900 flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span></div><span class="text-[9px] text-gray-400 font-bold">${m.settings?.location || ''}</span></div>
                                     <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
                                         <div class="text-xs font-black truncate flex-1 text-right pr-2" style="color: ${m.teamA?.color || '#000'}">${m.teamA?.name?.replace(/\n/g, '') || 'TeamA'}</div>
                                         <div class="text-sm font-black text-gray-900 px-2 py-0.5 bg-white rounded shadow-sm border border-gray-200 leading-none">${m.teamA?.setsWon || 0} - ${m.teamB?.setsWon || 0}</div>
@@ -1018,65 +879,31 @@
                                     </div>
                                 </div>
                                 ${deleteBtnHtml}
-                            </div>
-                        `;
+                            </div>`;
                     });
-                    html += `</div>`;
-                    groupDiv.innerHTML = html;
-                    listBody.appendChild(groupDiv);
+                    html += `</div>`; groupDiv.innerHTML = html; listBody.appendChild(groupDiv);
                 });
-                
-                // ★アイコン表示関数を最後に必ず呼び出す
                 if(window.lucide) lucide.createIcons();
-            } catch (e) {
-                console.error(e);
-                listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>';
-            }
+            } catch (e) { console.error(e); listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>'; }
         };
 
-        window.backToStartupMenu = () => {
-            document.getElementById('startup-match-list-container').classList.add('hidden');
-            document.getElementById('startup-match-list-container').classList.remove('flex');
-            document.getElementById('startup-menu').classList.remove('hidden');
-        };
-        
-        window.backToStartupMenuFromAll = () => {
-            document.getElementById('startup-all-list-container').classList.add('hidden');
-            document.getElementById('startup-all-list-container').classList.remove('flex');
-            document.getElementById('startup-menu').classList.remove('hidden');
-        };
+        window.backToStartupMenu = () => { document.getElementById('startup-match-list-container').classList.add('hidden'); document.getElementById('startup-match-list-container').classList.remove('flex'); document.getElementById('startup-menu').classList.remove('hidden'); };
+        window.backToStartupMenuFromAll = () => { document.getElementById('startup-all-list-container').classList.add('hidden'); document.getElementById('startup-all-list-container').classList.remove('flex'); document.getElementById('startup-menu').classList.remove('hidden'); };
 
-        // スコアボード画面（閲覧モード）から「今日の試合一覧」に戻る
         window.backToViewerListFromScoreboard = () => {
-            if(currentMatchUnsubscribe) {
-                currentMatchUnsubscribe();
-                currentMatchUnsubscribe = null;
-            }
+            if(currentMatchUnsubscribe) { currentMatchUnsubscribe(); currentMatchUnsubscribe = null; }
             state.role = 'viewer';
-            
-            document.getElementById('startup-overlay').classList.remove('hidden');
-            document.getElementById('startup-overlay').classList.add('flex');
-            
+            document.getElementById('startup-overlay').classList.remove('hidden'); document.getElementById('startup-overlay').classList.add('flex');
             document.getElementById('startup-menu').classList.add('hidden');
-            
-            document.getElementById('startup-match-list-container').classList.remove('hidden');
-            document.getElementById('startup-match-list-container').classList.add('flex');
-            
+            document.getElementById('startup-match-list-container').classList.remove('hidden'); document.getElementById('startup-match-list-container').classList.add('flex');
             window.renderViewerMatchList();
         };
 
         window.toggleAllMatchManageMode = () => {
             allMatchManageMode = !allMatchManageMode;
             const btn = document.getElementById('btn-manage-all-matches');
-            if (allMatchManageMode) {
-                btn.classList.replace('bg-red-900', 'bg-red-600');
-                btn.classList.replace('text-red-200', 'text-white');
-                btn.innerHTML = '削除モード完了';
-            } else {
-                btn.classList.replace('bg-red-600', 'bg-red-900');
-                btn.classList.replace('text-white', 'text-red-200');
-                btn.innerHTML = '管理 (削除する)';
-            }
+            if (allMatchManageMode) { btn.classList.replace('bg-red-900', 'bg-red-600'); btn.classList.replace('text-red-200', 'text-white'); btn.innerHTML = '削除モード完了'; } 
+            else { btn.classList.replace('bg-red-600', 'bg-red-900'); btn.classList.replace('text-white', 'text-red-200'); btn.innerHTML = '管理 (削除する)'; }
             window.renderAllMatchList();
         };
 
@@ -1084,411 +911,246 @@
             event.stopPropagation();
             if(confirm('この試合データを完全に削除しますか？\n(※削除すると元に戻せません)')) {
                 try {
-                    // Firebaseのデータベースから削除
-                    await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', matchId));
-                    
-                    // 成功した場合、通信の反映を待たずに画面のリストから即座に消去する
+                    // ★即座にブロックリストに登録して画面から消す
+                    deletedMatchIds.add(matchId);
                     globalMatches = globalMatches.filter(m => m.id !== matchId);
                     window.renderAllMatchList();
                     
+                    // クラウドから完全に消去
+                    await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', matchId));
                     window.showToast("試合データを削除しました", "success");
                 } catch(e) {
                     console.error("Delete Error: ", e);
-                    // もしエラーが起きた場合は、原因の文字をアラートで表示する
-                    alert("削除エラーが発生しました。\nエラー内容: " + e.message + "\n\n通信環境やデータベースの設定（ルール）を確認してください。");
+                    deletedMatchIds.delete(matchId); // エラー時は復活させる
+                    alert("削除エラーが発生しました。\nエラー内容: " + e.message);
                     window.showToast("削除に失敗しました", "error");
+                    window.renderAllMatchList();
                 }
             }
         };
 
         window.enterAsViewer = async (roomId) => {
-            viewerModeOnly = true; // 閲覧者専用フラグをON
-            state.roomName = roomId;
-            state.role = 'viewer';
+            viewerModeOnly = true; state.roomName = roomId; state.role = 'viewer';
             docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
-            
             const startupOverlay = document.getElementById('startup-overlay');
-            if(startupOverlay) {
-                startupOverlay.classList.add('hidden');
-                startupOverlay.classList.remove('flex');
-            }
+            if(startupOverlay) { startupOverlay.classList.add('hidden'); startupOverlay.classList.remove('flex'); }
             setupMatchListener();
         };
 
         window.toggleRole = () => {
-            if(viewerModeOnly) return; // 閲覧専用モードでは無効
+            if(viewerModeOnly) return; 
             state.role = state.role === 'admin' ? 'viewer' : 'admin';
             window.showToast(state.role === 'admin' ? "管理者モードになりました" : "閲覧者モードになりました", "success");
-            renderUI();
+            renderUI(); handleOverlays();
         };
 
         function setupMatchListener() {
-            if (currentMatchUnsubscribe) {
-                currentMatchUnsubscribe();
-                currentMatchUnsubscribe = null;
-            }
-            
+            if (currentMatchUnsubscribe) { currentMatchUnsubscribe(); currentMatchUnsubscribe = null; }
             if (!docRef) return;
-            
-            document.getElementById('connection-status').classList.replace('bg-red-500', 'bg-green-500');
-            document.getElementById('connection-status').classList.remove('animate-pulse');
+            document.getElementById('connection-status').classList.replace('bg-red-500', 'bg-green-500'); document.getElementById('connection-status').classList.remove('animate-pulse');
 
             currentMatchUnsubscribe = onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const myRole = state.role;
-                    const myRoom = state.roomName;
+                    const data = docSnap.data(); const myRole = state.role; const myRoom = state.roomName;
                     state = { ...state, ...data, setScores: { ...state.setScores, ...data.setScores }, settings: { ...state.settings, ...data.settings } };
-                    
                     if(!state.roster) state.roster = { starters: {center:null, setter:null, left:null, backLeft:null, right:null, backRight:null}, bench: [] };
-                    if(!state.currentCourt) state.currentCourt = [];
-                    if(!state.substitutions) state.substitutions = [];
-                    
-                    if(!state.teamA.logo || state.teamA.logo.length < 200) state.teamA.logo = 'goldenz.png';
-                    if(!state.teamB.logo || state.teamB.logo.length < 200) state.teamB.logo = 'vb.png';
-
+                    if(!state.currentCourt) state.currentCourt = []; if(!state.substitutions) state.substitutions = [];
                     state.role = myRole; state.roomName = myRoom;
-                    
                     renderUI(); handleOverlays();
                 }
-            }, (error) => {
-                console.error("Match Sync Error:", error);
-                window.showToast("通信エラーが発生しました", "error");
-            });
+            }, (error) => { console.error("Match Sync Error:", error); window.showToast("通信エラーが発生しました", "error"); });
         }
 
         async function saveToFirestore() {
             if (docRef && state.role === 'admin') {
-                try { 
-                    state.updatedAt = Date.now();
-                    await setDoc(docRef, state, { merge: true }); 
-                } catch (e) { 
-                    console.error("Save Error:", e); 
-                    window.showToast("保存に失敗しました", "error");
-                }
+                try { state.updatedAt = Date.now(); await setDoc(docRef, state, { merge: true }); } 
+                catch (e) { console.error("Save Error:", e); window.showToast("保存に失敗しました", "error"); }
             }
         }
 
         // ================= 設定画面：管理中の試合リスト関連 =================
-        let pendingActionMatchId = null;
-        let pendingActionMatchData = null;
+        let pendingActionMatchId = null; let pendingActionMatchData = null;
 
         window.loadMatchListForSettings = async () => {
             const listEl = document.getElementById('settings-match-list');
-            
-            if (!isMatchesLoaded) {
-                listEl.innerHTML = '<div class="text-center text-xs text-gray-500"><i data-lucide="loader-2" class="w-4 h-4 animate-spin inline"></i> 読み込み中...</div>';
-                if(window.lucide) lucide.createIcons();
-                return;
-            }
+            if (!isMatchesLoaded) { listEl.innerHTML = '<div class="text-center text-xs text-gray-500"><i data-lucide="loader-2" class="w-4 h-4 animate-spin inline"></i> 読み込み中...</div>'; if(window.lucide) lucide.createIcons(); return; }
             
             try {
-                let matches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr());
-                matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-                
-                if (matches.length === 0) {
-                    listEl.innerHTML = '<div class="text-center text-xs text-gray-500">当日の管理試合はありません</div>';
-                    return;
-                }
+                let matches = globalMatches.filter(d => d.matchDate === getJapaneseDateStr()); matches.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                if (matches.length === 0) { listEl.innerHTML = '<div class="text-center text-xs text-gray-500">当日の管理試合はありません</div>'; return; }
                 
                 listEl.innerHTML = '';
                 matches.forEach(m => {
-                    const isOver = m.matchStatus === 'match_over';
-                    const isPlaying = m.matchStatus === 'playing' || m.matchStatus === 'set_over';
+                    const isOver = m.matchStatus === 'match_over'; const isPlaying = m.matchStatus === 'playing' || m.matchStatus === 'set_over';
                     let statusLabel = '';
                     if(isOver) statusLabel = '<span class="text-[9px] text-gray-400 bg-gray-600 px-1 rounded font-bold">終了</span>';
                     else if(isPlaying) statusLabel = '<span class="text-[9px] text-red-600 bg-red-100 px-1 rounded font-bold">試合中</span>';
                     else statusLabel = '<span class="text-[9px] text-emerald-600 bg-emerald-100 px-1 rounded font-bold">準備中</span>';
                     
                     const isCurrent = (m.id === state.roomName);
-                    
                     const el = document.createElement('div');
                     el.className = `flex justify-between items-center p-2 rounded-lg transition-colors border cursor-pointer active:scale-95 ${isCurrent ? 'bg-blue-900 border-blue-500' : 'bg-gray-800 border-gray-700 hover:bg-gray-700'}`;
-                    
                     el.onclick = () => {
-                        pendingActionMatchId = m.id;
-                        pendingActionMatchData = m;
+                        pendingActionMatchId = m.id; pendingActionMatchData = m;
                         document.getElementById('action-modal-title').textContent = m.settings?.matchName || '試合を選択しました';
-                        document.getElementById('match-action-modal').classList.remove('hidden');
-                        document.getElementById('match-action-modal').classList.add('flex');
+                        document.getElementById('match-action-modal').classList.remove('hidden'); document.getElementById('match-action-modal').classList.add('flex');
                     };
-
-                    el.innerHTML = `
-                        <div class="min-w-0 flex-1 pointer-events-none">
-                            <div class="text-xs text-white font-bold flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span> ${isCurrent ? '<span class="text-[9px] bg-blue-600 text-white px-1 rounded ml-1">編集中</span>' : ''}</div>
-                            <div class="text-[10px] text-gray-400 truncate">${m.teamA?.name?.replace(/\n/g, '')} vs ${m.teamB?.name?.replace(/\n/g, '')} <span class="text-gray-500">(${m.teamA?.score||0}-${m.teamB?.score||0})</span></div>
-                        </div>
-                    `;
+                    el.innerHTML = `<div class="min-w-0 flex-1 pointer-events-none"><div class="text-xs text-white font-bold flex items-center gap-1">${statusLabel} <span class="truncate">${m.settings?.matchName || '名無し試合'}</span> ${isCurrent ? '<span class="text-[9px] bg-blue-600 text-white px-1 rounded ml-1">編集中</span>' : ''}</div><div class="text-[10px] text-gray-400 truncate">${m.teamA?.name?.replace(/\n/g, '')} vs ${m.teamB?.name?.replace(/\n/g, '')} <span class="text-gray-500">(${m.teamA?.score||0}-${m.teamB?.score||0})</span></div></div>`;
                     listEl.appendChild(el);
                 });
                 if(window.lucide) lucide.createIcons();
-            } catch(e) {
-                console.error(e);
-                listEl.innerHTML = '<div class="text-center text-xs text-red-500">表示エラー</div>';
-            }
+            } catch(e) { console.error(e); listEl.innerHTML = '<div class="text-center text-xs text-red-500">表示エラー</div>'; }
         };
 
-        window.closeMatchActionModal = () => {
-            document.getElementById('match-action-modal').classList.add('hidden');
-            document.getElementById('match-action-modal').classList.remove('flex');
-        };
+        window.closeMatchActionModal = () => { document.getElementById('match-action-modal').classList.add('hidden'); document.getElementById('match-action-modal').classList.remove('flex'); };
 
         window.selectMatchAction = (action) => {
             window.closeMatchActionModal();
             if (action === 'view') {
                 if (pendingActionMatchData.matchStatus === 'match_over') {
-                    document.getElementById('result-confirm-modal').classList.remove('hidden');
-                    document.getElementById('result-confirm-modal').classList.add('flex');
+                    document.getElementById('result-confirm-modal').classList.remove('hidden'); document.getElementById('result-confirm-modal').classList.add('flex');
                 } else {
-                    document.getElementById('settings-modal').classList.add('hidden');
-                    document.getElementById('settings-modal').classList.remove('flex');
-                    window.enterAsViewer(pendingActionMatchId);
+                    document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); window.enterAsViewer(pendingActionMatchId);
                 }
             } else if (action === 'edit') {
-                // 設定を確認・編集モードへ移行
-                state = { ...createEmptyState(), ...pendingActionMatchData };
-                state.roomName = pendingActionMatchId;
-                state.role = 'admin';
+                state = { ...createEmptyState(), ...pendingActionMatchData }; state.roomName = pendingActionMatchId; state.role = 'admin';
                 docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
-                
                 fillSettingsForm(state);
-                
-                // フッターの切り替え (既存編集用)
-                document.getElementById('settings-footer-new').classList.add('hidden');
-                document.getElementById('settings-footer-edit').classList.remove('hidden');
-                
-                setupMatchListener();
-                window.loadMatchListForSettings();
-                window.showToast("設定を読み込みました", "success");
+                document.getElementById('settings-footer-new').classList.add('hidden'); document.getElementById('settings-footer-edit').classList.remove('hidden');
+                setupMatchListener(); window.loadMatchListForSettings(); window.showToast("設定を読み込みました", "success");
             }
         };
 
-        window.closeResultConfirmModal = () => {
-            document.getElementById('result-confirm-modal').classList.add('hidden');
-            document.getElementById('result-confirm-modal').classList.remove('flex');
-        };
+        window.closeResultConfirmModal = () => { document.getElementById('result-confirm-modal').classList.add('hidden'); document.getElementById('result-confirm-modal').classList.remove('flex'); };
 
         window.showMatchResultImage = async (customMatchData = null) => {
             window.closeResultConfirmModal();
-            
-            const targetData = customMatchData || pendingActionMatchData;
-            if (!targetData) return;
+            const targetData = customMatchData || pendingActionMatchData; if (!targetData) return;
 
-            const origState = JSON.parse(JSON.stringify(state)); 
-            state = { ...state, ...targetData };
-            
             const container = document.getElementById('result-image-container');
-            container.innerHTML = '<div class="text-white text-sm flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-yellow-500"></i><span>画像生成中...</span></div>';
+            container.innerHTML = '<div class="text-white text-sm flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-yellow-500"></i><span>画像読み込み中...</span></div>';
             lucide.createIcons();
-            document.getElementById('result-image-modal').classList.remove('hidden');
-            document.getElementById('result-image-modal').classList.add('flex');
+            document.getElementById('result-image-modal').classList.remove('hidden'); document.getElementById('result-image-modal').classList.add('flex');
             
-            const canvas = await generateResultCanvas();
-            if(canvas) {
-                canvas.style.maxWidth = '100%';
-                canvas.style.height = 'auto';
-                canvas.style.borderRadius = '8px';
-                container.innerHTML = '';
-                container.appendChild(canvas);
+            // クラウドに保存された画像（JPEG）があればそれを即座に表示
+            if (targetData.resultImage) {
+                const img = document.createElement('img');
+                img.src = targetData.resultImage;
+                img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.borderRadius = '8px';
+                img.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.5)';
+                container.innerHTML = ''; container.appendChild(img);
             } else {
-                container.innerHTML = '<div class="text-red-500 font-bold bg-white p-4 rounded-xl">画像の生成に失敗しました</div>';
+                // 過去のデータで画像未保存の場合は互換性のため動的生成
+                const origState = JSON.parse(JSON.stringify(state)); state = { ...state, ...targetData };
+                const canvas = await generateResultCanvas();
+                if(canvas) {
+                    canvas.style.maxWidth = '100%'; canvas.style.height = 'auto'; canvas.style.borderRadius = '8px';
+                    container.innerHTML = ''; container.appendChild(canvas);
+                } else { container.innerHTML = '<div class="text-red-500 font-bold bg-white p-4 rounded-xl">画像の読み込みに失敗しました</div>'; }
+                state = origState; 
             }
-            state = origState; 
         };
         
         window.showMatchResultImageFromPast = (matchId) => {
             const matchData = globalMatches.find(m => m.id === matchId);
-            if(matchData) {
-                window.showMatchResultImage(matchData);
-            } else {
-                window.showToast("試合データが見つかりません", "error");
-            }
+            if(matchData) { window.showMatchResultImage(matchData); } else { window.showToast("試合データが見つかりません", "error"); }
         };
 
-        window.closeResultImageModal = () => {
-            document.getElementById('result-image-modal').classList.add('hidden');
-            document.getElementById('result-image-modal').classList.remove('flex');
-        };
+        window.closeResultImageModal = () => { document.getElementById('result-image-modal').classList.add('hidden'); document.getElementById('result-image-modal').classList.remove('flex'); };
 
         window.backToStartupFromImage = () => {
-            window.closeResultImageModal();
-            window.closeResultConfirmModal();
-            
-            document.getElementById('next-set-overlay').classList.add('hidden');
-            document.getElementById('next-set-overlay').classList.remove('flex');
-            document.getElementById('settings-modal').classList.add('hidden');
-            document.getElementById('settings-modal').classList.remove('flex');
-            
-            document.getElementById('startup-match-list-container').classList.add('hidden');
-            document.getElementById('startup-match-list-container').classList.remove('flex');
-            if(document.getElementById('startup-all-list-container')) {
-                document.getElementById('startup-all-list-container').classList.add('hidden');
-                document.getElementById('startup-all-list-container').classList.remove('flex');
-            }
-            
-            document.getElementById('startup-overlay').classList.remove('hidden');
-            document.getElementById('startup-overlay').classList.add('flex');
+            window.closeResultImageModal(); window.closeResultConfirmModal();
+            document.getElementById('next-set-overlay').classList.add('hidden'); document.getElementById('next-set-overlay').classList.remove('flex');
+            document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex');
+            document.getElementById('startup-match-list-container').classList.add('hidden'); document.getElementById('startup-match-list-container').classList.remove('flex');
+            if(document.getElementById('startup-all-list-container')) { document.getElementById('startup-all-list-container').classList.add('hidden'); document.getElementById('startup-all-list-container').classList.remove('flex'); }
+            document.getElementById('startup-overlay').classList.remove('hidden'); document.getElementById('startup-overlay').classList.add('flex');
             document.getElementById('startup-menu').classList.remove('hidden');
         };
 
-        function getPlayerById(id) {
-            return globalPlayers.find(p => p.id === id) || { name: '不明な選手', grade: '' };
-        }
-
-        function getStarterIds() {
-            if (!state.roster || !state.roster.starters) return [];
-            return Object.values(state.roster.starters).filter(s => s !== null).map(s => s.id);
-        }
+        function getPlayerById(id) { return globalPlayers.find(p => p.id === id) || { name: '不明な選手', grade: '' }; }
+        function getStarterIds() { if (!state.roster || !state.roster.starters) return []; return Object.values(state.roster.starters).filter(s => s !== null).map(s => s.id); }
 
         // ================= 選手データベース処理 =================
-        let dbMode = 'manage'; 
-        let currentSelectingPosition = null;
+        let dbMode = 'manage'; let currentSelectingPosition = null;
 
         window.openPlayersDBModal = (mode = 'manage') => {
             dbMode = mode;
-            const titleEl = document.getElementById('db-modal-title');
-            const addForm = document.getElementById('db-add-form');
-            const promoArea = document.getElementById('db-promotion-area');
-            const btnClose = document.getElementById('btn-db-close');
-            const btnSelectBench = document.getElementById('btn-db-select-bench');
+            const titleEl = document.getElementById('db-modal-title'); const addForm = document.getElementById('db-add-form');
+            const promoArea = document.getElementById('db-promotion-area'); const btnClose = document.getElementById('btn-db-close'); const btnSelectBench = document.getElementById('btn-db-select-bench');
 
             window.cancelEditDB();
 
             if (mode === 'manage') {
-                titleEl.textContent = '選手一覧 (データベース管理)';
-                addForm.classList.remove('hidden'); addForm.classList.add('flex');
-                promoArea.classList.remove('hidden'); promoArea.classList.add('flex');
-                btnClose.classList.remove('hidden'); btnSelectBench.classList.add('hidden');
-                btnClose.textContent = "戻る";
+                titleEl.textContent = '選手一覧 (データベース管理)'; addForm.classList.remove('hidden'); addForm.classList.add('flex'); promoArea.classList.remove('hidden'); promoArea.classList.add('flex');
+                btnClose.classList.remove('hidden'); btnSelectBench.classList.add('hidden'); btnClose.textContent = "戻る";
             } else if (mode === 'selectStarter') {
-                titleEl.textContent = `${POSITIONS[currentSelectingPosition]} を選択`;
-                addForm.classList.add('hidden'); addForm.classList.remove('flex');
-                promoArea.classList.add('hidden'); promoArea.classList.remove('flex');
-                btnClose.classList.remove('hidden'); btnSelectBench.classList.add('hidden');
-                btnClose.textContent = "戻る (選択をやめる)";
+                titleEl.textContent = `${POSITIONS[currentSelectingPosition]} を選択`; addForm.classList.add('hidden'); addForm.classList.remove('flex'); promoArea.classList.add('hidden'); promoArea.classList.remove('flex');
+                btnClose.classList.remove('hidden'); btnSelectBench.classList.add('hidden'); btnClose.textContent = "戻る (選択をやめる)";
             } else if (mode === 'selectBench') {
-                titleEl.textContent = `控え選手を選択 (背番号入力)`;
-                addForm.classList.add('hidden'); addForm.classList.remove('flex');
-                promoArea.classList.add('hidden'); promoArea.classList.remove('flex');
+                titleEl.textContent = `控え選手を選択 (背番号入力)`; addForm.classList.add('hidden'); addForm.classList.remove('flex'); promoArea.classList.add('hidden'); promoArea.classList.remove('flex');
                 btnClose.classList.add('hidden'); btnSelectBench.classList.remove('hidden');
             }
             
-            renderPlayersDBList();
-            document.getElementById('players-db-modal').classList.remove('hidden'); document.getElementById('players-db-modal').classList.add('flex');
-            document.getElementById('roster-modal').classList.add('hidden');
+            renderPlayersDBList(); document.getElementById('players-db-modal').classList.remove('hidden'); document.getElementById('players-db-modal').classList.add('flex'); document.getElementById('roster-modal').classList.add('hidden');
         };
 
-        window.closePlayersDBModal = () => {
-            document.getElementById('players-db-modal').classList.add('hidden');
-            document.getElementById('players-db-modal').classList.remove('flex');
-            window.openRosterModal();
-        };
+        window.closePlayersDBModal = () => { document.getElementById('players-db-modal').classList.add('hidden'); document.getElementById('players-db-modal').classList.remove('flex'); window.openRosterModal(); };
 
-        let editingPlayerId = null;
-        let backupPlayers = null;
+        let editingPlayerId = null; let backupPlayers = null;
 
         window.addOrUpdatePlayerInDB = async () => {
-            const grade = document.getElementById('new-player-grade').value;
-            const name = document.getElementById('new-player-name').value;
+            const grade = document.getElementById('new-player-grade').value; const name = document.getElementById('new-player-name').value;
             if(!name) { window.showToast("選手名を入力してください", "error"); return; }
-
-            if(editingPlayerId) {
-                const p = globalPlayers.find(x => x.id === editingPlayerId);
-                if(p) { p.grade = grade; p.name = name; }
-                window.showToast("情報を更新しました", "success");
-            } else {
-                globalPlayers.push({ id: crypto.randomUUID(), grade, name });
-                window.showToast("選手を登録しました", "success");
-            }
-            
-            if(db) {
-                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
-                await setDoc(pRef, { players: globalPlayers }, { merge: true });
-            }
-            window.cancelEditDB();
-            renderPlayersDBList();
+            if(editingPlayerId) { const p = globalPlayers.find(x => x.id === editingPlayerId); if(p) { p.grade = grade; p.name = name; } window.showToast("情報を更新しました", "success"); } 
+            else { globalPlayers.push({ id: crypto.randomUUID(), grade, name }); window.showToast("選手を登録しました", "success"); }
+            if(db) { const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db'); await setDoc(pRef, { players: globalPlayers }, { merge: true }); }
+            window.cancelEditDB(); renderPlayersDBList();
         };
 
         window.cancelEditDB = () => {
-            editingPlayerId = null;
-            document.getElementById('new-player-name').value = '';
-            const btn = document.getElementById('btn-add-player');
-            btn.textContent = '登録';
-            btn.classList.replace('bg-green-600', 'bg-indigo-600'); btn.classList.replace('hover:bg-green-500', 'hover:bg-indigo-500');
-            document.getElementById('btn-cancel-edit').classList.add('hidden');
+            editingPlayerId = null; document.getElementById('new-player-name').value = ''; const btn = document.getElementById('btn-add-player');
+            btn.textContent = '登録'; btn.classList.replace('bg-green-600', 'bg-indigo-600'); btn.classList.replace('hover:bg-green-500', 'hover:bg-indigo-500'); document.getElementById('btn-cancel-edit').classList.add('hidden');
         };
 
         window.editPlayerInDB = (id) => {
             if(dbMode !== 'manage') return; 
             const p = globalPlayers.find(x => x.id === id); if(!p) return;
-            document.getElementById('new-player-grade').value = p.grade;
-            document.getElementById('new-player-name').value = p.name;
-            editingPlayerId = id;
-            
-            const btn = document.getElementById('btn-add-player');
-            btn.textContent = '更新';
-            btn.classList.replace('bg-indigo-600', 'bg-green-600'); btn.classList.replace('hover:bg-indigo-500', 'hover:bg-green-500');
-            document.getElementById('btn-cancel-edit').classList.remove('hidden');
-            document.getElementById('db-add-form').scrollIntoView({behavior: 'smooth'});
+            document.getElementById('new-player-grade').value = p.grade; document.getElementById('new-player-name').value = p.name; editingPlayerId = id;
+            const btn = document.getElementById('btn-add-player'); btn.textContent = '更新'; btn.classList.replace('bg-indigo-600', 'bg-green-600'); btn.classList.replace('hover:bg-indigo-500', 'hover:bg-green-500');
+            document.getElementById('btn-cancel-edit').classList.remove('hidden'); document.getElementById('db-add-form').scrollIntoView({behavior: 'smooth'});
         };
 
         window.deletePlayerFromDB = (id, event) => {
-            event.stopPropagation(); 
-            if(!confirm("この選手を削除しますか？")) return;
+            event.stopPropagation(); if(!confirm("この選手を削除しますか？")) return;
             globalPlayers = globalPlayers.filter(p => p.id !== id);
-            if(db) {
-                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
-                setDoc(pRef, { players: globalPlayers }, { merge: true });
-            }
-            window.cancelEditDB();
-            renderPlayersDBList();
+            if(db) { const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db'); setDoc(pRef, { players: globalPlayers }, { merge: true }); }
+            window.cancelEditDB(); renderPlayersDBList();
         };
 
         window.executePromotion = async () => {
             if(globalPlayers.length === 0) { window.showToast("選手が登録されていません", "error"); return; }
             if(!confirm("学年を1つ繰り上げ、現在の6年生の選手は削除されます。\nよろしいですか？")) return;
-            
             backupPlayers = JSON.parse(JSON.stringify(globalPlayers));
             const gradeMap = { "1年": "2年", "2年": "3年", "3年": "4年", "4年": "5年", "5年": "6年" };
-            
-            globalPlayers = globalPlayers.filter(p => p.grade !== "6年").map(p => {
-                if(gradeMap[p.grade]) p.grade = gradeMap[p.grade];
-                return p;
-            });
-
-            if(db) {
-                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
-                await setDoc(pRef, { players: globalPlayers }, { merge: true });
-            }
-            
-            renderPlayersDBList();
-            document.getElementById('btn-undo-promotion').classList.remove('hidden');
-            window.showToast("進級処理を完了しました", "success");
+            globalPlayers = globalPlayers.filter(p => p.grade !== "6年").map(p => { if(gradeMap[p.grade]) p.grade = gradeMap[p.grade]; return p; });
+            if(db) { const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db'); await setDoc(pRef, { players: globalPlayers }, { merge: true }); }
+            renderPlayersDBList(); document.getElementById('btn-undo-promotion').classList.remove('hidden'); window.showToast("進級処理を完了しました", "success");
         };
 
         window.undoPromotion = async () => {
-            if(!backupPlayers) return;
-            globalPlayers = JSON.parse(JSON.stringify(backupPlayers));
-            if(db) {
-                const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db');
-                await setDoc(pRef, { players: globalPlayers }, { merge: true });
-            }
-            renderPlayersDBList();
-            document.getElementById('btn-undo-promotion').classList.add('hidden');
-            backupPlayers = null;
-            window.showToast("進級処理を取り消しました", "success");
+            if(!backupPlayers) return; globalPlayers = JSON.parse(JSON.stringify(backupPlayers));
+            if(db) { const pRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'rosters', 'teamA_db'); await setDoc(pRef, { players: globalPlayers }, { merge: true }); }
+            renderPlayersDBList(); document.getElementById('btn-undo-promotion').classList.add('hidden'); backupPlayers = null; window.showToast("進級処理を取り消しました", "success");
         };
 
         function renderPlayersDBList() {
             const container = document.getElementById('db-list-container'); container.innerHTML = '';
             const sorted = [...globalPlayers].sort((a, b) => b.grade.localeCompare(a.grade));
-            const starterIds = getStarterIds();
-            const benchIds = state.roster.bench.map(b => b.id);
+            const starterIds = getStarterIds(); const benchIds = state.roster.bench.map(b => b.id);
 
             sorted.forEach(p => {
-                const isStarter = starterIds.includes(p.id);
-                let disabled = false; let actionHtml = '';
-
+                const isStarter = starterIds.includes(p.id); let disabled = false; let actionHtml = '';
                 if (dbMode === 'selectStarter' && isStarter) { disabled = true; actionHtml = '<span class="text-[10px] sm:text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded font-bold">先発済</span>'; }
                 if (dbMode === 'selectBench' && isStarter) { disabled = true; actionHtml = '<span class="text-[10px] sm:text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded font-bold">先発</span>'; }
 
@@ -1499,104 +1161,50 @@
                     item.onclick = () => window.editPlayerInDB(p.id);
                     actionHtml = `<button onclick="window.deletePlayerFromDB('${p.id}', event)" class="p-2 sm:p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg active:scale-95 transition-colors z-10"><i data-lucide="trash-2" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none"></i></button>`;
                 } else if (dbMode === 'selectBench' && !disabled) {
-                    const existingBench = state.roster.bench.find(b => b.id === p.id);
-                    const isChecked = existingBench ? 'checked' : '';
-                    const defaultNum = existingBench ? existingBench.number : getSavedNumber(p.id);
-                    actionHtml = `
-                        <div class="flex items-center gap-2 sm:gap-3 bg-blue-50 p-1.5 sm:p-2 rounded-lg border border-blue-100" onclick="event.stopPropagation()">
-                            <input type="checkbox" class="w-5 h-5 sm:w-6 sm:h-6 bench-cb" value="${p.id}" ${isChecked} onchange="window.toggleBenchInput(this)">
-                            <input type="number" id="bench-num-${p.id}" placeholder="背番" class="w-12 sm:w-16 p-1.5 sm:p-2 text-center font-bold text-sm sm:text-lg border rounded bg-white ${isChecked ? '' : 'opacity-50'}" value="${defaultNum}" ${isChecked ? '' : 'disabled'}>
-                        </div>
-                    `;
+                    const existingBench = state.roster.bench.find(b => b.id === p.id); const isChecked = existingBench ? 'checked' : ''; const defaultNum = existingBench ? existingBench.number : getSavedNumber(p.id);
+                    actionHtml = `<div class="flex items-center gap-2 sm:gap-3 bg-blue-50 p-1.5 sm:p-2 rounded-lg border border-blue-100" onclick="event.stopPropagation()"><input type="checkbox" class="w-5 h-5 sm:w-6 sm:h-6 bench-cb" value="${p.id}" ${isChecked} onchange="window.toggleBenchInput(this)"><input type="number" id="bench-num-${p.id}" placeholder="背番" class="w-12 sm:w-16 p-1.5 sm:p-2 text-center font-bold text-sm sm:text-lg border rounded bg-white ${isChecked ? '' : 'opacity-50'}" value="${defaultNum}" ${isChecked ? '' : 'disabled'}></div>`;
                 } else if (dbMode === 'selectStarter' && !disabled) {
-                    item.onclick = (e) => { e.preventDefault(); window.startNumberInput(p.id); };
-                    actionHtml = `<span class="bg-blue-100 text-blue-700 font-bold text-[10px] px-2 py-1 rounded shadow-sm border border-blue-200 pointer-events-none">タップして選択</span>`;
+                    item.onclick = (e) => { e.preventDefault(); window.startNumberInput(p.id); }; actionHtml = `<span class="bg-blue-100 text-blue-700 font-bold text-[10px] px-2 py-1 rounded shadow-sm border border-blue-200 pointer-events-none">タップして選択</span>`;
                 }
 
-                item.innerHTML = `
-                    <div class="flex justify-between items-center w-full">
-                        <div class="flex-1 min-w-0 pr-2 pointer-events-none flex items-baseline gap-2 sm:gap-3">
-                            <div class="text-base sm:text-xl font-black text-gray-500 shrink-0">${p.grade}</div>
-                            <div class="text-base sm:text-xl font-black text-gray-900 truncate">${p.name}</div>
-                        </div>
-                        <div class="shrink-0 flex items-center gap-2">${actionHtml}</div>
-                    </div>
-                `;
+                item.innerHTML = `<div class="flex justify-between items-center w-full"><div class="flex-1 min-w-0 pr-2 pointer-events-none flex items-baseline gap-2 sm:gap-3"><div class="text-base sm:text-xl font-black text-gray-500 shrink-0">${p.grade}</div><div class="text-base sm:text-xl font-black text-gray-900 truncate">${p.name}</div></div><div class="shrink-0 flex items-center gap-2">${actionHtml}</div></div>`;
                 container.appendChild(item);
             });
             lucide.createIcons();
         }
 
-        window.toggleBenchInput = (cb) => {
-            const input = document.getElementById(`bench-num-${cb.value}`);
-            if(input) { input.disabled = !cb.checked; if(cb.checked) { input.classList.remove('opacity-50'); input.focus(); } else input.classList.add('opacity-50'); }
-        };
+        window.toggleBenchInput = (cb) => { const input = document.getElementById(`bench-num-${cb.value}`); if(input) { input.disabled = !cb.checked; if(cb.checked) { input.classList.remove('opacity-50'); input.focus(); } else input.classList.add('opacity-50'); } };
 
         window.confirmBenchSelection = () => {
-            const cbs = document.querySelectorAll('.bench-cb:checked');
-            const newBench = []; 
+            const cbs = document.querySelectorAll('.bench-cb:checked'); const newBench = []; 
             cbs.forEach(cb => {
                 const id = cb.value; const input = document.getElementById(`bench-num-${id}`);
-                let number = input ? input.value : '';
-                if(!number) number = '0'; // 入力忘れ対策：自動で0を割り当て
-                saveNumber(id, number); 
-                newBench.push({ id, number });
+                let number = input ? input.value : ''; if(!number) number = '0'; saveNumber(id, number); newBench.push({ id, number });
             });
-            state.roster.bench = newBench;
-            window.closePlayersDBModal(); window.showToast("控え選手を登録しました", "success");
+            state.roster.bench = newBench; window.closePlayersDBModal(); window.showToast("控え選手を登録しました", "success");
         };
 
         let pendingPlayerIdForNumber = null;
         window.startNumberInput = (playerId) => {
-            const savedNum = getSavedNumber(playerId);
-            pendingPlayerIdForNumber = playerId;
-
-            if (savedNum && currentSelectingPosition) {
-                document.getElementById('number-input-val').value = savedNum;
-                window.confirmNumberInput(true); 
-                return;
-            }
-
-            const p = getPlayerById(playerId);
-            document.getElementById('number-input-name').textContent = p.name;
-            document.getElementById('number-input-val').value = savedNum;
-            
-            document.getElementById('players-db-modal').classList.add('hidden');
-            document.getElementById('number-input-modal').classList.remove('hidden'); document.getElementById('number-input-modal').classList.add('flex');
+            const savedNum = getSavedNumber(playerId); pendingPlayerIdForNumber = playerId;
+            if (savedNum && currentSelectingPosition) { document.getElementById('number-input-val').value = savedNum; window.confirmNumberInput(true); return; }
+            const p = getPlayerById(playerId); document.getElementById('number-input-name').textContent = p.name; document.getElementById('number-input-val').value = savedNum;
+            document.getElementById('players-db-modal').classList.add('hidden'); document.getElementById('number-input-modal').classList.remove('hidden'); document.getElementById('number-input-modal').classList.add('flex');
             setTimeout(() => document.getElementById('number-input-val').focus(), 100);
         };
 
-        window.closeNumberInput = () => {
-            document.getElementById('number-input-modal').classList.add('hidden'); document.getElementById('number-input-modal').classList.remove('flex');
-            document.getElementById('players-db-modal').classList.remove('hidden');
-        };
+        window.closeNumberInput = () => { document.getElementById('number-input-modal').classList.add('hidden'); document.getElementById('number-input-modal').classList.remove('flex'); document.getElementById('players-db-modal').classList.remove('hidden'); };
         
         window.confirmNumberInput = (isSkipped = false) => {
-            const num = document.getElementById('number-input-val').value;
-            if(!num) { window.showToast("背番号を入力してください", "error"); return; }
-            
+            const num = document.getElementById('number-input-val').value; if(!num) { window.showToast("背番号を入力してください", "error"); return; }
             saveNumber(pendingPlayerIdForNumber, num); 
-            
-            if(currentSelectingPosition && pendingPlayerIdForNumber) {
-                state.roster.starters[currentSelectingPosition] = { id: pendingPlayerIdForNumber, number: num };
-                window.showToast(`${POSITIONS[currentSelectingPosition]} を登録しました`, "success");
-            }
-            
-            if (!isSkipped) {
-                document.getElementById('number-input-modal').classList.add('hidden'); document.getElementById('number-input-modal').classList.remove('flex');
-            }
+            if(currentSelectingPosition && pendingPlayerIdForNumber) { state.roster.starters[currentSelectingPosition] = { id: pendingPlayerIdForNumber, number: num }; window.showToast(`${POSITIONS[currentSelectingPosition]} を登録しました`, "success"); }
+            if (!isSkipped) { document.getElementById('number-input-modal').classList.add('hidden'); document.getElementById('number-input-modal').classList.remove('flex'); }
             window.closePlayersDBModal();
         };
 
-        window.openRosterModal = () => {
-            renderRosterLists();
-            document.getElementById('roster-modal').classList.remove('hidden'); document.getElementById('roster-modal').classList.add('flex');
-            document.getElementById('settings-modal').classList.add('hidden');
-        };
-        window.closeRosterModal = () => {
-            document.getElementById('roster-modal').classList.add('hidden'); document.getElementById('roster-modal').classList.remove('flex');
-            document.getElementById('settings-modal').classList.remove('hidden'); saveToFirestore();
-        };
+        window.openRosterModal = () => { renderRosterLists(); document.getElementById('roster-modal').classList.remove('hidden'); document.getElementById('roster-modal').classList.add('flex'); document.getElementById('settings-modal').classList.add('hidden'); };
+        window.closeRosterModal = () => { document.getElementById('roster-modal').classList.add('hidden'); document.getElementById('roster-modal').classList.remove('flex'); document.getElementById('settings-modal').classList.remove('hidden'); saveToFirestore(); };
 
         window.startSelectStarter = (posKey) => { currentSelectingPosition = posKey; window.openPlayersDBModal('selectStarter'); };
         window.startSelectBench = () => { window.openPlayersDBModal('selectBench'); };
@@ -1604,45 +1212,27 @@
         function renderRosterLists() {
             const startersDiv = document.getElementById('roster-starters-list'); startersDiv.innerHTML = '';
             for (const [key, label] of Object.entries(POSITIONS)) {
-                const s = state.roster.starters[key];
-                let infoHtml = `<span class="text-gray-400 font-bold text-xs sm:text-sm">未選択</span>`;
-                let btnClass = "bg-blue-600 hover:bg-blue-500 text-white"; let btnText = "選択";
-                
-                if (s) {
-                    const p = getPlayerById(s.id);
-                    infoHtml = `<div class="flex items-center gap-2 sm:gap-3"><span class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 text-blue-800 rounded-lg flex items-center justify-center font-black text-sm sm:text-lg border border-blue-200 shrink-0">${s.number}</span><span class="font-black text-gray-900 text-sm sm:text-lg truncate max-w-[100px] sm:max-w-[120px]">${p.name}</span></div>`;
-                    btnClass = "bg-gray-200 text-gray-700"; btnText = "変更";
-                }
+                const s = state.roster.starters[key]; let infoHtml = `<span class="text-gray-400 font-bold text-xs sm:text-sm">未選択</span>`; let btnClass = "bg-blue-600 hover:bg-blue-500 text-white"; let btnText = "選択";
+                if (s) { const p = getPlayerById(s.id); infoHtml = `<div class="flex items-center gap-2 sm:gap-3"><span class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 text-blue-800 rounded-lg flex items-center justify-center font-black text-sm sm:text-lg border border-blue-200 shrink-0">${s.number}</span><span class="font-black text-gray-900 text-sm sm:text-lg truncate max-w-[100px] sm:max-w-[120px]">${p.name}</span></div>`; btnClass = "bg-gray-200 text-gray-700"; btnText = "変更"; }
                 startersDiv.innerHTML += `<div class="flex items-center justify-between p-2 sm:p-3 border-2 border-gray-100 rounded-xl bg-white shadow-sm"><div class="w-16 sm:w-20 text-[10px] sm:text-xs font-black text-gray-500 shrink-0">${label}</div><div class="flex-1 flex justify-center">${infoHtml}</div><button onclick="window.startSelectStarter('${key}')" class="shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm active:scale-95 transition-colors ${btnClass}">${btnText}</button></div>`;
             }
-            
             const benchDiv = document.getElementById('roster-bench-list'); benchDiv.innerHTML = '';
-            if (state.roster.bench.length === 0) {
-                benchDiv.innerHTML = '<div class="text-center text-xs text-gray-400 font-bold py-2">控え選手はいません</div>';
-            } else {
-                state.roster.bench.forEach(b => {
-                    const p = getPlayerById(b.id);
-                    benchDiv.innerHTML += `<div class="bg-white border-2 border-gray-100 p-2 sm:p-3 rounded-xl font-bold shadow-sm flex items-center justify-between"><div class="flex items-center gap-2 sm:gap-3"><span class="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 text-gray-800 rounded-lg flex items-center justify-center font-black text-sm sm:text-base border border-gray-300 shrink-0">${b.number}</span> <span class="text-sm sm:text-base truncate max-w-[120px] sm:max-w-[150px]">${p.name}</span></div></div>`;
-                });
-            }
+            if (state.roster.bench.length === 0) { benchDiv.innerHTML = '<div class="text-center text-xs text-gray-400 font-bold py-2">控え選手はいません</div>'; } 
+            else { state.roster.bench.forEach(b => { const p = getPlayerById(b.id); benchDiv.innerHTML += `<div class="bg-white border-2 border-gray-100 p-2 sm:p-3 rounded-xl font-bold shadow-sm flex items-center justify-between"><div class="flex items-center gap-2 sm:gap-3"><span class="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 text-gray-800 rounded-lg flex items-center justify-center font-black text-sm sm:text-base border border-gray-300 shrink-0">${b.number}</span> <span class="text-sm sm:text-base truncate max-w-[120px] sm:max-w-[150px]">${p.name}</span></div></div>`; }); }
         }
 
         let subSelectedOut = []; let subSelectedIn = [];  
         window.openSubModal = () => {
             if(state.matchStatus !== 'playing') { window.showToast("試合中のみ交代できます", "error"); return; }
-            subSelectedOut = []; subSelectedIn = [];
-            renderSubModalLists();
+            subSelectedOut = []; subSelectedIn = []; renderSubModalLists();
             document.getElementById('sub-modal').classList.remove('hidden'); document.getElementById('sub-modal').classList.add('flex');
         };
         window.closeSubModal = () => { document.getElementById('sub-modal').classList.add('hidden'); document.getElementById('sub-modal').classList.remove('flex'); };
 
         window.toggleSubSelect = (type, index) => {
-            const list = type === 'out' ? subSelectedOut : subSelectedIn;
-            const idx = list.indexOf(index); if (idx > -1) list.splice(idx, 1); else list.push(index);
-            renderSubModalLists();
-            const btn = document.getElementById('btn-execute-sub');
-            if(subSelectedOut.length > 0 && subSelectedOut.length === subSelectedIn.length) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); } 
-            else { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
+            const list = type === 'out' ? subSelectedOut : subSelectedIn; const idx = list.indexOf(index); if (idx > -1) list.splice(idx, 1); else list.push(index);
+            renderSubModalLists(); const btn = document.getElementById('btn-execute-sub');
+            if(subSelectedOut.length > 0 && subSelectedOut.length === subSelectedIn.length) { btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); } else { btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); }
         };
 
         function renderSubModalLists() {
@@ -1661,11 +1251,9 @@
         window.executeSubstitution = async () => {
             const timeStr = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
             for (let i=0; i<subSelectedOut.length; i++) {
-                const oIdx = subSelectedOut[i]; const iIdx = subSelectedIn[i];
-                const outPlayer = state.currentCourt[oIdx]; const inPlayer = state.roster.bench[iIdx];
+                const oIdx = subSelectedOut[i]; const iIdx = subSelectedIn[i]; const outPlayer = state.currentCourt[oIdx]; const inPlayer = state.roster.bench[iIdx];
                 state.substitutions.push({ set: state.currentSet, time: timeStr, outId: outPlayer.id, outNumber: outPlayer.number, inId: inPlayer.id, inNumber: inPlayer.number });
-                state.currentCourt[oIdx] = { id: inPlayer.id, number: inPlayer.number, posKey: outPlayer.posKey };
-                state.roster.bench[iIdx] = { id: outPlayer.id, number: outPlayer.number };
+                state.currentCourt[oIdx] = { id: inPlayer.id, number: inPlayer.number, posKey: outPlayer.posKey }; state.roster.bench[iIdx] = { id: outPlayer.id, number: outPlayer.number };
             }
             window.closeSubModal(); window.showToast(`${subSelectedOut.length}名の交代を記録しました`, "success"); await saveToFirestore();
         };
@@ -1687,52 +1275,31 @@
         window.openSettings = () => {
             if(state.role !== 'admin') return;
             fillSettingsForm(state);
-            
-            document.getElementById('settings-footer-new').classList.add('hidden');
-            document.getElementById('settings-footer-edit').classList.remove('hidden');
-            
+            document.getElementById('settings-footer-new').classList.add('hidden'); document.getElementById('settings-footer-edit').classList.remove('hidden');
             document.getElementById('settings-modal').classList.remove('hidden'); document.getElementById('settings-modal').classList.add('flex');
             window.loadMatchListForSettings();
         };
 
         window.closeSettingsIfRunning = () => { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); }
 
-        // 新規試合として開始
         window.saveSettingsAndStart = async () => {
             if(!confirm("新しい試合を作成して開始しますか？")) return;
-            
             applySettingsFormToState();
-            
-            state.teamA.score = 0; state.teamA.setsWon = 0; 
-            state.teamB.score = 0; state.teamB.setsWon = 0;
-            state.currentSet = 1; state.serving = 'A'; state.matchStatus = 'waiting';
+            state.roomName = 'room_' + crypto.randomUUID().substring(0,8);
+            state.teamA.score = 0; state.teamA.setsWon = 0; state.teamB.score = 0; state.teamB.setsWon = 0;
+            state.currentSet = 1; state.serving = 'A'; state.matchStatus = 'waiting'; state.resultImage = null;
             state.setScores = { 1:{A:0,B:0,winner:null}, 2:{A:0,B:0,winner:null}, 3:{A:0,B:0,winner:null}, 4:{A:0,B:0,winner:null}, 5:{A:0,B:0,winner:null} };
             state.setStartTimes = {1: null, 2: null, 3: null, 4: null, 5: null}; state.setEndTimes = {1: null, 2: null, 3: null, 4: null, 5: null};
-            state.substitutions = []; state.currentCourt = [];
-            state.matchDate = getJapaneseDateStr();
-            
+            state.substitutions = []; state.currentCourt = []; state.matchDate = getJapaneseDateStr();
             docRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', state.roomName);
-            setupMatchListener();
-            
-            window.closeSettingsIfRunning(); 
-            renderUI(); 
-            handleOverlays(); 
-            await saveToFirestore();
-            
+            setupMatchListener(); window.closeSettingsIfRunning(); renderUI(); handleOverlays(); await saveToFirestore();
             if(document.getElementById('settings-match-list')) window.loadMatchListForSettings();
         };
 
-        // 既存の試合として更新・継続
         window.saveSettingsAndUpdate = async () => {
             applySettingsFormToState();
-            
             if(state.matchStatus === 'setting' || state.matchStatus === 'start') state.matchStatus = 'waiting';
-            
-            window.closeSettingsIfRunning(); 
-            renderUI(); 
-            handleOverlays(); 
-            await saveToFirestore();
-            
+            window.closeSettingsIfRunning(); renderUI(); handleOverlays(); await saveToFirestore();
             if(document.getElementById('settings-match-list')) window.loadMatchListForSettings();
         };
 
@@ -1750,16 +1317,12 @@
             if (t.score + amount < 0) return; 
             if (state.setScores[state.currentSet] && state.setScores[state.currentSet].winner && amount > 0) return;
 
-            const curSetObj = state.setScores[state.currentSet];
-            t.score += amount;
-            if (amount > 0) state.serving = team;
-            curSetObj[team] = t.score;
+            const curSetObj = state.setScores[state.currentSet]; t.score += amount;
+            if (amount > 0) state.serving = team; curSetObj[team] = t.score;
 
             const target = getTargetForSet(state.currentSet, state.settings.format, state.settings.targetPoints);
-            const scoreA = state.teamA.score; const scoreB = state.teamB.score;
-            let setWinner = null;
-            if (scoreA >= target && scoreA - scoreB >= 2) setWinner = 'A';
-            else if (scoreB >= target && scoreB - scoreA >= 2) setWinner = 'B';
+            const scoreA = state.teamA.score; const scoreB = state.teamB.score; let setWinner = null;
+            if (scoreA >= target && scoreA - scoreB >= 2) setWinner = 'A'; else if (scoreB >= target && scoreB - scoreA >= 2) setWinner = 'B';
             curSetObj.winner = setWinner;
 
             let winsA = 0, winsB = 0;
@@ -1772,45 +1335,85 @@
             if (setWinner) {
                 const now = new Date(); state.setEndTimes[state.currentSet] = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
                 const setsToWin = Math.ceil(state.settings.format / 2);
-                if (winsA >= setsToWin || winsB >= setsToWin) state.matchStatus = 'match_over'; else state.matchStatus = 'set_over';
+                if (winsA >= setsToWin || winsB >= setsToWin) {
+                    state.matchStatus = 'match_over';
+                    generateAndSaveResultImage(); // ★試合終了時にクラウドに自動保存
+                } else { state.matchStatus = 'set_over'; }
             }
             renderUI(); handleOverlays(); await saveToFirestore();
         };
 
+        // ★自動保存用の画像生成機能
+        async function generateAndSaveResultImage() {
+            if (state.role !== 'admin' || !docRef) return;
+            try {
+                const canvas = await generateResultCanvas();
+                if (canvas) {
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    await setDoc(docRef, { resultImage: dataUrl }, { merge: true });
+                }
+            } catch(e) { console.error("Auto save image error", e); }
+        }
+
         window.nextSet = async () => {
             if (state.currentSet >= state.settings.format) return;
             state.currentSet++; state.teamA.score = 0; state.teamB.score = 0;
-            state.serving = state.setScores[state.currentSet - 1].winner === 'A' ? 'A' : 'B'; 
-            state.matchStatus = 'waiting'; 
+            state.serving = state.setScores[state.currentSet - 1].winner === 'A' ? 'A' : 'B'; state.matchStatus = 'waiting'; 
             document.getElementById('next-set-overlay').classList.add('hidden'); document.getElementById('next-set-overlay').classList.remove('flex');
             renderUI(); handleOverlays(); await saveToFirestore();
         };
 
-        window.endMatch = async () => {
-            document.getElementById('next-set-overlay').classList.add('hidden'); document.getElementById('next-set-overlay').classList.remove('flex');
-            window.openSettings(); 
-        };
+        window.endMatch = async () => { document.getElementById('next-set-overlay').classList.add('hidden'); document.getElementById('next-set-overlay').classList.remove('flex'); window.openSettings(); };
 
+        // ★閲覧者モード時の各種ボタンの非表示・メッセージ制御を修正
         function handleOverlays() {
             const startOverlay = document.getElementById('match-start-overlay'); const endOverlay = document.getElementById('next-set-overlay');
             startOverlay.classList.add('hidden'); startOverlay.classList.remove('flex'); endOverlay.classList.add('hidden'); endOverlay.classList.remove('flex');
+            
             if (state.matchStatus === 'waiting') {
                 document.getElementById('start-overlay-title').textContent = `第 ${state.currentSet} セット`;
+                if(state.role === 'viewer') {
+                     document.getElementById('start-overlay-desc').textContent = "点数管理者が開始するのをお待ちください";
+                     document.getElementById('btn-start-set').classList.add('hidden');
+                } else {
+                     document.getElementById('start-overlay-desc').textContent = "準備ができたら開始ボタンを押してください";
+                     document.getElementById('btn-start-set').classList.remove('hidden'); document.getElementById('btn-start-set').classList.add('flex');
+                }
                 startOverlay.classList.remove('hidden'); startOverlay.classList.add('flex');
             } else if (state.matchStatus === 'set_over' || state.matchStatus === 'match_over') {
                 const currentWinner = state.setScores[state.currentSet].winner;
                 const winnerName = currentWinner === 'A' ? state.teamA.name.replace(/\n/g, ' ') : state.teamB.name.replace(/\n/g, ' ');
                 const isMatchOver = state.matchStatus === 'match_over';
-                document.getElementById('set-winner-text').textContent = isMatchOver ? `${winnerName} が勝利！` : `${winnerName} がセット獲得！`;
-                document.getElementById('set-result-score').textContent = `${state.teamA.score} - ${state.teamB.score}`;
                 
                 const nextBtn = document.getElementById('btn-next-set'); const endBtns = document.getElementById('match-end-buttons');
-                if (isMatchOver) { nextBtn.classList.add('hidden'); nextBtn.classList.remove('flex'); endBtns.classList.remove('hidden'); endBtns.classList.add('flex'); } 
-                else { nextBtn.classList.remove('hidden'); nextBtn.classList.add('flex'); endBtns.classList.add('hidden'); endBtns.classList.remove('flex'); }
+                
+                // --- 閲覧者モードでの制御 ---
+                if (state.role === 'viewer') {
+                    nextBtn.classList.add('hidden'); nextBtn.classList.remove('flex'); endBtns.classList.add('hidden'); endBtns.classList.remove('flex');
+                    document.getElementById('set-winner-text').textContent = isMatchOver ? `${winnerName} が勝利！` : `${winnerName} がセット獲得！`;
+                    document.getElementById('set-result-score').textContent = `${state.teamA.score} - ${state.teamB.score}`;
+                    
+                    let waitMsg = document.getElementById('viewer-wait-msg');
+                    if (!waitMsg) {
+                        waitMsg = document.createElement('div'); waitMsg.id = 'viewer-wait-msg'; waitMsg.className = 'text-sm text-gray-500 font-bold mt-2';
+                        document.getElementById('next-set-overlay').querySelector('.bg-white').appendChild(waitMsg);
+                    }
+                    waitMsg.textContent = isMatchOver ? "試合終了です。管理者が結果を保存しています..." : "次のセットが始まるまでお待ちください";
+                    waitMsg.classList.remove('hidden');
+                } else {
+                    // --- 管理者モードでの制御 ---
+                    if (document.getElementById('viewer-wait-msg')) document.getElementById('viewer-wait-msg').classList.add('hidden');
+                    document.getElementById('set-winner-text').textContent = isMatchOver ? `${winnerName} が勝利！` : `${winnerName} がセット獲得！`;
+                    document.getElementById('set-result-score').textContent = `${state.teamA.score} - ${state.teamB.score}`;
+                    
+                    if (isMatchOver) { nextBtn.classList.add('hidden'); nextBtn.classList.remove('flex'); endBtns.classList.remove('hidden'); endBtns.classList.add('flex'); } 
+                    else { nextBtn.classList.remove('hidden'); nextBtn.classList.add('flex'); endBtns.classList.add('hidden'); endBtns.classList.remove('flex'); }
+                }
                 endOverlay.classList.remove('hidden'); endOverlay.classList.add('flex');
             }
         }
 
+        // ★結果画像の描画崩れ・控え選手表示の修正
         async function generateResultCanvas() {
             try {
                 const exportDiv = document.createElement('div');
@@ -1828,9 +1431,9 @@
                     if(s && (s.A > 0 || s.B > 0 || s.winner)) {
                         const isWinA = s.winner === 'A'; const isWinB = s.winner === 'B';
                         const valA = s.A > 0 || s.winner ? s.A : 0; const valB = s.B > 0 || s.winner ? s.B : 0;
-                        const scoreAHtml = isWinA ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valA}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valA}</div></div>`;
-                        const scoreBHtml = isWinB ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valB}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valB}</div></div>`;
-                        setsHtml += `<tr><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 18px; font-weight: bold; line-height: 1;">${i}</div></td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreAHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;">${scoreBHtml}</td><td style="border: 1px solid #d1d5db; height: 70px; padding: 0;"><div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 16px; font-weight: bold; color: #4b5563; line-height: 1.2;"><span>${state.setStartTimes[i]||'--:--'}</span><span>|</span><span>${state.setEndTimes[i]||'--:--'}</span></div></td></tr>`;
+                        const scoreAHtml = isWinA ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valA}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valA}</div></div>`;
+                        const scoreBHtml = isWinB ? `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;"><div style="font-size: 14px; font-weight: 900; color: #ef4444; line-height: 1; margin-bottom: 4px; letter-spacing: 1px;">WIN</div><div style="font-size: 32px; font-weight: 900; color: #ef4444; line-height: 1;">${valB}</div></div>` : `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px;"><div style="font-size: 24px; font-weight: 900; color: #111827; line-height: 1;">${valB}</div></div>`;
+                        setsHtml += `<tr><td style="border: 1px solid #d1d5db; padding: 10px;"><div style="display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold; line-height: 1;">${i}</div></td><td style="border: 1px solid #d1d5db; padding: 0;">${scoreAHtml}</td><td style="border: 1px solid #d1d5db; padding: 0;">${scoreBHtml}</td><td style="border: 1px solid #d1d5db; padding: 10px;"><div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 16px; font-weight: bold; color: #4b5563; line-height: 1.2;"><span>${state.setStartTimes[i]||'--:--'}</span><span>|</span><span>${state.setEndTimes[i]||'--:--'}</span></div></td></tr>`;
                     }
                 }
 
@@ -1838,6 +1441,16 @@
                 for(const [key, label] of Object.entries(POSITIONS)) {
                     const s = state.roster.starters[key];
                     if(s) { const p = getPlayerById(s.id); startersHtml += `<div style="display: flex; border-bottom: 1px solid #e5e7eb; padding: 8px 0;"><div style="width: 120px; font-weight: bold; color: #6b7280; font-size: 14px; display: flex; align-items: center;">${label}</div><div style="width: 50px; font-weight: 900; font-size: 16px; text-align: center; display: flex; align-items: center; justify-content: center;">${s.number}</div><div style="flex: 1; font-weight: 900; font-size: 16px; padding-left: 10px; display: flex; align-items: center;">${p.name}</div></div>`; }
+                }
+
+                // 控え選手のHTML
+                let benchHtml = '';
+                if(state.roster.bench && state.roster.bench.length > 0) {
+                    let benchNames = state.roster.bench.map(b => {
+                        const p = getPlayerById(b.id);
+                        return `<span style="display:inline-block; margin-right:12px; margin-bottom:4px;"><span style="color:#6b7280; font-size:12px;">${b.number}</span> ${p.name}</span>`;
+                    }).join('');
+                    benchHtml = `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #d1d5db;"><h3 style="font-size: 14px; font-weight: bold; color: #6b7280; margin: 0 0 5px 0;">控え選手</h3><div style="font-size: 14px; font-weight: bold; display: flex; flex-wrap: wrap;">${benchNames}</div></div>`;
                 }
 
                 let subsHtml = '';
@@ -1861,16 +1474,16 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 15%;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">セット</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; height: 100%; font-size: 20px; color: #000; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div></th>
-                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; height: 50px; padding: 0; width: 25%;"><div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 16px; line-height: 1;">開始 | 終了</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 10px; width: 15%;"><div style="display: flex; justify-content: center; align-items: center; font-size: 16px; line-height: 1;">セット</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 10px; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; font-size: 20px; color: #000; line-height: 1.2;">${state.teamA.name.replace(/\n/g, '<br>')}</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 10px; width: 30%;"><div style="display: flex; justify-content: center; align-items: center; text-align: center; font-size: 20px; color: #000; line-height: 1.2;">${state.teamB.name.replace(/\n/g, '<br>')}</div></th>
+                                <th style="border: 1px solid #d1d5db; background-color: #f9fafb; padding: 10px; width: 25%;"><div style="display: flex; justify-content: center; align-items: center; font-size: 16px; line-height: 1;">開始 | 終了</div></th>
                             </tr>
                         </thead>
                         <tbody>${setsHtml}</tbody>
                     </table>
-                    <div style="display: flex; gap: 40px;">
-                        <div style="flex: 1;"><h2 style="font-size: 20px; font-weight: 900; margin: 0 0 15px 0; border-bottom: 3px solid #f5a623; padding-bottom: 5px;">先発メンバー (渡慶次)</h2>${startersHtml}</div>
+                    <div style="display: flex; gap: 40px; text-align: left;">
+                        <div style="flex: 1;"><h2 style="font-size: 20px; font-weight: 900; margin: 0 0 15px 0; border-bottom: 3px solid #f5a623; padding-bottom: 5px;">先発メンバー (渡慶次)</h2>${startersHtml}${benchHtml}</div>
                         <div style="flex: 1;"><h2 style="font-size: 20px; font-weight: 900; margin: 0 0 15px 0; border-bottom: 3px solid #3b82f6; padding-bottom: 5px;">交代記録</h2>${subsHtml}</div>
                     </div>
                 `;
@@ -1886,81 +1499,58 @@
             const btn = document.getElementById('btn-save-img');
             const origHtml = btn.innerHTML; btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 生成中...'; lucide.createIcons();
             
-            const canvas = await generateResultCanvas();
-            if (canvas) {
-                canvas.toBlob((blob) => {
-                    if (!blob) throw new Error('Blob error');
-                    const fileName = `${state.settings.matchName}_結果.png`;
-                    const file = new File([blob], fileName, { type: 'image/png' });
-                    
+            let dataUrl = state.resultImage;
+            if (!dataUrl) {
+                const canvas = await generateResultCanvas();
+                if (canvas) dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            }
+            
+            if (dataUrl) {
+                fetch(dataUrl).then(r => r.blob()).then(blob => {
+                    const file = new File([blob], `試合結果_${Date.now()}.jpg`, { type: 'image/jpeg' });
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share({ files: [file], title: '試合結果', text: `${state.settings.matchName}の結果です。` }).catch(console.error);
+                        navigator.share({ files: [file], title: '試合結果', text: '試合結果です。' }).catch(console.error);
                     } else {
                         const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a'); a.href = url; a.download = fileName; a.click();
-                        URL.revokeObjectURL(url); window.showToast("画像をダウンロードしました", "success");
+                        const a = document.createElement('a'); a.href = url; a.download = file.name; a.click();
+                        URL.revokeObjectURL(url); window.showToast("画像を保存しました", "success");
                     }
-                }, 'image/png');
-            } else { window.showToast("画像の生成に失敗しました", "error"); } 
-            btn.innerHTML = origHtml; lucide.createIcons();
-        };
-
-        window.backToStartupFromSettings = () => {
-            document.getElementById('settings-modal').classList.add('hidden');
-            document.getElementById('settings-modal').classList.remove('flex');
-            document.getElementById('startup-overlay').classList.remove('hidden');
-            document.getElementById('startup-overlay').classList.add('flex');
-            document.getElementById('startup-menu').classList.remove('hidden');
-        };
-
-        window.backToStartupFromEnd = () => {
-            document.getElementById('next-set-overlay').classList.add('hidden');
-            document.getElementById('next-set-overlay').classList.remove('flex');
-            document.getElementById('startup-overlay').classList.remove('hidden');
-            document.getElementById('startup-overlay').classList.add('flex');
-            document.getElementById('startup-menu').classList.remove('hidden');
+                    btn.innerHTML = origHtml; lucide.createIcons();
+                });
+            } else { window.showToast("画像の取得に失敗しました", "error"); btn.innerHTML = origHtml; lucide.createIcons(); } 
         };
 
         window.shareCurrentResultImage = () => {
             const container = document.getElementById('result-image-container');
-            const canvas = container.querySelector('canvas');
-            if(!canvas) { window.showToast("画像がまだ生成されていません", "error"); return; }
+            const img = container.querySelector('img'); const canvas = container.querySelector('canvas');
             
-            canvas.toBlob((blob) => {
-                if (!blob) { window.showToast("画像の取得に失敗しました", "error"); return; }
-                const fileName = `試合結果_${Date.now()}.png`;
-                const file = new File([blob], fileName, { type: 'image/png' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: '試合結果', text: '試合結果です。' }).catch(console.error);
-                } else {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a'); a.href = url; a.download = fileName; a.click();
-                    URL.revokeObjectURL(url); window.showToast("画像を保存しました", "success");
-                }
-            }, 'image/png');
+            if (img) {
+                fetch(img.src).then(res => res.blob()).then(blob => {
+                    const file = new File([blob], `試合結果_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: '試合結果' }).catch(console.error); } 
+                    else { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = file.name; a.click(); URL.revokeObjectURL(url); window.showToast("保存しました", "success"); }
+                });
+            } else if (canvas) {
+                canvas.toBlob((blob) => {
+                    if (!blob) return;
+                    const file = new File([blob], `試合結果_${Date.now()}.png`, { type: 'image/png' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: '試合結果' }).catch(console.error); } 
+                    else { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = file.name; a.click(); URL.revokeObjectURL(url); window.showToast("保存しました", "success"); }
+                }, 'image/png');
+            } else { window.showToast("画像がありません", "error"); }
         };
 
         function getTargetForSet(setIndex, format, baseTarget) { return setIndex === format ? 15 : baseTarget; }
 
         function renderUI() {
             const roleIcon = document.getElementById('role-icon'); const roleText = document.getElementById('role-text');
-            
-            // 閲覧者専用モードなら管理者用ボタンを完全に隠し、一覧に戻るボタンを出す
             if(viewerModeOnly) {
                 document.querySelectorAll('.admin-only').forEach(el => {
-                    if (el.id === 'score-btn-a' || el.id === 'score-btn-b') {
-                        el.style.pointerEvents = 'none'; // クリック（操作）だけ無効化
-                        el.classList.remove('hidden');   // 非表示にはしない（点数を見せるため）
-                    } else {
-                        el.classList.add('hidden');
-                    }
+                    if (el.id === 'score-btn-a' || el.id === 'score-btn-b') { el.style.pointerEvents = 'none'; el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
                 });
-                document.getElementById('btn-back-to-viewer-list').classList.remove('hidden');
-                document.getElementById('btn-back-to-viewer-list').classList.add('flex');
+                document.getElementById('btn-back-to-viewer-list').classList.remove('hidden'); document.getElementById('btn-back-to-viewer-list').classList.add('flex');
             } else {
-                document.getElementById('btn-back-to-viewer-list').classList.add('hidden');
-                document.getElementById('btn-back-to-viewer-list').classList.remove('flex');
-                
+                document.getElementById('btn-back-to-viewer-list').classList.add('hidden'); document.getElementById('btn-back-to-viewer-list').classList.remove('flex');
                 if(state.role === 'admin') {
                     roleIcon.setAttribute('data-lucide', 'user-cog'); roleText.textContent = "管理者";
                     document.getElementById('btn-toggle-role').className = "admin-only bg-blue-100 hover:bg-blue-200 border border-blue-300 text-blue-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-xs font-bold active:scale-95";
@@ -1969,23 +1559,14 @@
                 } else {
                     roleIcon.setAttribute('data-lucide', 'eye'); roleText.textContent = "閲覧者";
                     document.getElementById('btn-toggle-role').className = "admin-only bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 text-emerald-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-xs font-bold active:scale-95";
-                    document.querySelectorAll('.admin-only').forEach(el => { 
-                        if(el.tagName === 'BUTTON' && !el.id.includes('score-btn') && el.id !== 'btn-toggle-role') {
-                            el.classList.add('hidden'); 
-                        } else {
-                            el.style.pointerEvents = 'none'; 
-                            el.classList.remove('hidden');
-                        }
-                    });
-                    document.getElementById('btn-toggle-role').style.pointerEvents = 'auto';
-                    document.getElementById('btn-open-settings').classList.add('hidden');
+                    document.querySelectorAll('.admin-only').forEach(el => { if(el.tagName === 'BUTTON' && !el.id.includes('score-btn') && el.id !== 'btn-toggle-role') { el.classList.add('hidden'); } else { el.style.pointerEvents = 'none'; el.classList.remove('hidden'); } });
+                    document.getElementById('btn-toggle-role').style.pointerEvents = 'auto'; document.getElementById('btn-open-settings').classList.add('hidden');
                 }
             }
             lucide.createIcons();
             
             document.documentElement.style.setProperty('--color-a', state.teamA.color); document.documentElement.style.setProperty('--color-b', state.teamB.color);
-            document.getElementById('ui-logo-a').src = state.teamA.logo || 'goldenz.png';
-            document.getElementById('ui-logo-b').src = state.teamB.logo || 'vb.png';
+            document.getElementById('ui-logo-a').src = state.teamA.logo || 'goldenz.png'; document.getElementById('ui-logo-b').src = state.teamB.logo || 'vb.png';
 
             document.getElementById('ui-name-a').innerHTML = state.teamA.name.replace(/\n/g, '<br>'); document.getElementById('ui-name-b').innerHTML = state.teamB.name.replace(/\n/g, '<br>');
             document.getElementById('ui-score-a').textContent = state.teamA.score; document.getElementById('ui-score-b').textContent = state.teamB.score;
