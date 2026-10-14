@@ -635,7 +635,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const FIXED_APP_ID = 'volleyball-score-fixed-db-v1';
         const LOCAL_STORAGE_NUMBERS_KEY = 'volleyball-player-numbers-v3';
@@ -679,7 +679,6 @@
         let isMatchesLoaded = false;
         let currentMatchUnsubscribe = null;
         let viewerModeOnly = false;
-        const deletedMatchIds = new Set(); // 削除済みブロック用リスト
 
         function getJapaneseDateStr() {
             try { const formatter = new Intl.DateTimeFormat('ja-JP', { era: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'japanese' }); return formatter.format(new Date()); } 
@@ -720,9 +719,7 @@
                     onSnapshot(matchesRef, (snapshot) => {
                         globalMatches = [];
                         snapshot.forEach((doc) => {
-                            if (!deletedMatchIds.has(doc.id)) {
-                                globalMatches.push({ id: doc.id, ...doc.data() });
-                            }
+                            globalMatches.push({ id: doc.id, ...doc.data() });
                         });
                         isMatchesLoaded = true;
                         
@@ -911,20 +908,15 @@
             event.stopPropagation();
             if(confirm('この試合データを完全に削除しますか？\n(※削除すると元に戻せません)')) {
                 try {
-                    // ★即座にブロックリストに登録して画面から消す
-                    deletedMatchIds.add(matchId);
-                    globalMatches = globalMatches.filter(m => m.id !== matchId);
-                    window.renderAllMatchList();
-                    
+                    // 画像データがあればそれも削除する
+                    await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'match_images', matchId)).catch(() => {});
                     // クラウドから完全に消去
                     await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', matchId));
                     window.showToast("試合データを削除しました", "success");
                 } catch(e) {
                     console.error("Delete Error: ", e);
-                    deletedMatchIds.delete(matchId); // エラー時は復活させる
                     alert("削除エラーが発生しました。\nエラー内容: " + e.message);
                     window.showToast("削除に失敗しました", "error");
-                    window.renderAllMatchList();
                 }
             }
         };
@@ -963,7 +955,13 @@
 
         async function saveToFirestore() {
             if (docRef && state.role === 'admin') {
-                try { state.updatedAt = Date.now(); await setDoc(docRef, state, { merge: true }); } 
+                try { 
+                    state.updatedAt = Date.now(); 
+                    // 画像データは容量が大きいため、毎回の同期データから除外して送信する（超高速化）
+                    const stateToSave = { ...state };
+                    delete stateToSave.resultImage;
+                    await setDoc(docRef, stateToSave, { merge: true }); 
+                } 
                 catch (e) { console.error("Save Error:", e); window.showToast("保存に失敗しました", "error"); }
             }
         }
@@ -1032,23 +1030,35 @@
             lucide.createIcons();
             document.getElementById('result-image-modal').classList.remove('hidden'); document.getElementById('result-image-modal').classList.add('flex');
             
-            // クラウドに保存された画像（JPEG）があればそれを即座に表示
-            if (targetData.resultImage) {
-                const img = document.createElement('img');
-                img.src = targetData.resultImage;
-                img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.borderRadius = '8px';
-                img.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.5)';
-                container.innerHTML = ''; container.appendChild(img);
-            } else {
-                // 過去のデータで画像未保存の場合は互換性のため動的生成
-                const origState = JSON.parse(JSON.stringify(state)); state = { ...state, ...targetData };
-                const canvas = await generateResultCanvas();
-                if(canvas) {
-                    canvas.style.maxWidth = '100%'; canvas.style.height = 'auto'; canvas.style.borderRadius = '8px';
-                    container.innerHTML = ''; container.appendChild(canvas);
-                } else { container.innerHTML = '<div class="text-red-500 font-bold bg-white p-4 rounded-xl">画像の読み込みに失敗しました</div>'; }
-                state = origState; 
+            // クラウドに保存された画像（JPEG）を取得して表示
+            if (targetData.hasResultImage || targetData.resultImage) {
+                let imageUrl = targetData.resultImage;
+                // 新方式: 容量削減のため別ドキュメントから画像を取得
+                if (targetData.hasResultImage) {
+                    try {
+                        const imgSnap = await getDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'match_images', targetData.id));
+                        if (imgSnap.exists()) imageUrl = imgSnap.data().resultImage;
+                    } catch(e) { console.error("画像取得エラー", e); }
+                }
+                
+                if (imageUrl) {
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.borderRadius = '8px';
+                    img.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.5)';
+                    container.innerHTML = ''; container.appendChild(img);
+                    return;
+                }
             }
+            
+            // 過去のデータ等で画像が未保存の場合は互換性のため動的生成
+            const origState = JSON.parse(JSON.stringify(state)); state = { ...state, ...targetData };
+            const canvas = await generateResultCanvas();
+            if(canvas) {
+                canvas.style.maxWidth = '100%'; canvas.style.height = 'auto'; canvas.style.borderRadius = '8px';
+                container.innerHTML = ''; container.appendChild(canvas);
+            } else { container.innerHTML = '<div class="text-red-500 font-bold bg-white p-4 rounded-xl">画像の読み込みに失敗しました</div>'; }
+            state = origState; 
         };
         
         window.showMatchResultImageFromPast = (matchId) => {
@@ -1350,7 +1360,10 @@
                 const canvas = await generateResultCanvas();
                 if (canvas) {
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    await setDoc(docRef, { resultImage: dataUrl }, { merge: true });
+                    // 画像は容量が大きいため、同期用のmatchesとは別の場所に保存する
+                    const imgRef = doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'match_images', state.roomName);
+                    await setDoc(imgRef, { resultImage: dataUrl });
+                    await setDoc(docRef, { hasResultImage: true }, { merge: true });
                 }
             } catch(e) { console.error("Auto save image error", e); }
         }
