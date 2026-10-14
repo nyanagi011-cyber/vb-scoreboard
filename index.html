@@ -1084,10 +1084,18 @@
             event.stopPropagation();
             if(confirm('この試合データを完全に削除しますか？\n(※削除すると元に戻せません)')) {
                 try {
+                    // Firebaseのデータベースから削除
                     await deleteDoc(doc(db, 'artifacts', FIXED_APP_ID, 'public', 'data', 'matches', matchId));
+                    
+                    // 成功した場合、通信の反映を待たずに画面のリストから即座に消去する
+                    globalMatches = globalMatches.filter(m => m.id !== matchId);
+                    window.renderAllMatchList();
+                    
                     window.showToast("試合データを削除しました", "success");
                 } catch(e) {
-                    console.error(e);
+                    console.error("Delete Error: ", e);
+                    // もしエラーが起きた場合は、原因の文字をアラートで表示する
+                    alert("削除エラーが発生しました。\nエラー内容: " + e.message + "\n\n通信環境やデータベースの設定（ルール）を確認してください。");
                     window.showToast("削除に失敗しました", "error");
                 }
             }
