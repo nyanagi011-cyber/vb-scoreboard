@@ -1937,7 +1937,14 @@
             
             // 閲覧者専用モードなら管理者用ボタンを完全に隠し、一覧に戻るボタンを出す
             if(viewerModeOnly) {
-                document.querySelectorAll('.admin-only').forEach(el => { el.classList.add('hidden'); });
+                document.querySelectorAll('.admin-only').forEach(el => {
+                    if (el.id === 'score-btn-a' || el.id === 'score-btn-b') {
+                        el.style.pointerEvents = 'none'; // クリック（操作）だけ無効化
+                        el.classList.remove('hidden');   // 非表示にはしない（点数を見せるため）
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                });
                 document.getElementById('btn-back-to-viewer-list').classList.remove('hidden');
                 document.getElementById('btn-back-to-viewer-list').classList.add('flex');
             } else {
@@ -1952,7 +1959,14 @@
                 } else {
                     roleIcon.setAttribute('data-lucide', 'eye'); roleText.textContent = "閲覧者";
                     document.getElementById('btn-toggle-role').className = "admin-only bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 text-emerald-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-xs font-bold active:scale-95";
-                    document.querySelectorAll('.admin-only').forEach(el => { if(el.tagName === 'BUTTON' && !el.id.includes('score-btn') && el.id !== 'btn-toggle-role') el.classList.add('hidden'); else el.style.pointerEvents = 'none'; });
+                    document.querySelectorAll('.admin-only').forEach(el => { 
+                        if(el.tagName === 'BUTTON' && !el.id.includes('score-btn') && el.id !== 'btn-toggle-role') {
+                            el.classList.add('hidden'); 
+                        } else {
+                            el.style.pointerEvents = 'none'; 
+                            el.classList.remove('hidden');
+                        }
+                    });
                     document.getElementById('btn-toggle-role').style.pointerEvents = 'auto';
                     document.getElementById('btn-open-settings').classList.add('hidden');
                 }
