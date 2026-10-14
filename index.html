@@ -769,7 +769,6 @@
         });
 
         // ================= アプリ入室ロジック =================
-        
         // 1. 新しく試合を始める（管理者）
         window.startNewMatch = async () => {
             const btn = document.getElementById('btn-startup-new');
@@ -1001,7 +1000,8 @@
                             }
                         }
 
-                        const deleteBtnHtml = allMatchManageMode ? `<button onclick="window.deleteMatchFromAllList('${m.id}', event)" class="p-3 bg-red-600 text-white hover:bg-red-500 rounded-r-xl transition-colors z-10 flex-shrink-0 flex items-center justify-center"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : '';
+                        // ★アイコンが出ない場合も考慮して、ボタンに「削除」という文字を確実に追加
+                        const deleteBtnHtml = allMatchManageMode ? `<button onclick="window.deleteMatchFromAllList('${m.id}', event)" class="px-4 bg-red-600 text-white hover:bg-red-500 rounded-r-xl transition-colors z-10 flex-shrink-0 flex items-center justify-center gap-1 font-bold text-xs"><i data-lucide="trash-2" class="w-4 h-4"></i>削除</button>` : '';
                         const cursorClass = allMatchManageMode ? '' : 'cursor-pointer hover:border-gray-400 active:bg-gray-50';
 
                         html += `
@@ -1025,7 +1025,9 @@
                     groupDiv.innerHTML = html;
                     listBody.appendChild(groupDiv);
                 });
-
+                
+                // ★アイコン表示関数を最後に必ず呼び出す
+                if(window.lucide) lucide.createIcons();
             } catch (e) {
                 console.error(e);
                 listBody.innerHTML = '<div class="text-center text-sm text-red-500 font-bold py-8">データ表示エラーが発生しました</div>';
